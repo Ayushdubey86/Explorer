@@ -1,1 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">
+    <title>Trip Planner</title>
+</head>
+<body>
+    <div class="inline-container">
+        <h1>Explorer</h1>
+        <p style="margin-left: 29%;">You don't know where you're going, time to let it go, let us plan for you! Sit back and relax</p>
+        <div id="background-image-container"></div>
+    </div>
+      
 
+    <div id="app">
+        <!-- Background Image Section -->
+      
+
+        <h1>Plan Your Trip</h1>
+
+        <!-- Section 1: Budget, Duration, Currency -->
+        <section id="basic-info">
+            <div class="info-container">
+                <div class="info-item" id="resident-container">
+                    <label for="resident">Resident</label>
+                    <input type="text" id="resident" placeholder="Current Resident">
+                </div>
+                <div class="info-item" id="budget-container">
+                    <label for="expense-cap">Expense Cap</label>
+                    <input type="text" id="expense-cap" placeholder="Enter budget" />
+                </div>
+
+                <div class="info-item" id="currency-container">
+                    <label for="currency">Currency</label>
+                    <select id="currency" name="currency" style="margin-left: 10px;">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="INR">INR</option>
+                        <option value="JPY">JPY</option>
+                    </select>
+                </div>
+
+                <div class="info-item" id="duration-container">
+                    <label for="duration">Time Duration (days)</label>
+                    <input id="duration" placeholder="Enter number of days" style="margin-left: 10px;" />
+                </div>
+            </div>
+        </section>
+
+        <div class="inline-container">
+          <h1>Optional Preference</h1>
+          <p>for better predictability...</p>
+      </div>
+        <section id="optional-info">
+            <div class="preferences-container">
+                <div class="preferences-row">
+                    <div class="input-group">
+                        <label for="companion">Travel Companion</label>
+                        <select id="companion" name="companion">
+                            <option value=""></option>
+                            <option value="Solo">Solo</option>
+                            <option value="Couple">Couple</option>
+                            <option value="Family">Family</option>
+                            <option value="Group">Group</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="accommodation">Accommodation Type</label>
+                        <select id="accommodation" name="accommodation">
+                            <option value=""></option>
+                            <option value="Hotel">Hotel</option>
+                            <option value="Hostel">Hostel</option>
+                            <option value="Vacation Rental">Vacation Rental</option>
+                            <option value="Camping">Camping</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="style">Travel Style</label>
+                        <select id="style" name="style">
+                            <option value=""></option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Relaxation">Relaxation</option>
+                            <option value="Cultural">Cultural</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="preferences-row">
+                    <div class="input-group">
+                        <label for="interest">Interest Area</label>
+                        <select id="interest" name="interest">
+                            <option value=""></option>
+                            <option value="Historical Sites">Historical Sites</option>
+                            <option value="Nature and Hiking">Nature and Hiking</option>
+                            <option value="Food and Wine">Food and Wine</option>
+                            <option value="Art and Culture">Art and Culture</option>
+                            <option value="Shopping">Shopping</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="transport">Transport Preference</label>
+                        <select id="transport" name="transport">
+                            <option value=""></option>
+                            <option value="Car Rental">Car Rental</option>
+                            <option value="Public Transport">Public Transport</option>
+                            <option value="Walking/Biking">Walking/Biking</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="submit-button">Plan My Trip</button>
+            </div>
+        </section>
+
+        <!-- Itinerary Results -->
+        <div id="itinerary">
+            <!-- Itinerary results will be displayed here -->
+        </div>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

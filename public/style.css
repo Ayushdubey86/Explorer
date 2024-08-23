@@ -1,0 +1,155 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+  }
+  
+  #app {
+    width: 80%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    position: relative;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  section {
+    margin: 20px 0;
+  }
+  
+  .info-container {
+    position: relative;
+    height: 60px; /* Adjust based on the height of your elements */
+    display: flex; /* Added to arrange children in a row */
+    align-items: center; /* Center items vertically */
+    gap: 20px; /* Adjust the gap between items as needed */
+    margin-left: 140px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column; /* Stack label and input vertically */
+    align-items: flex-start; /* Align items to the start of the container */
+    padding: 0 10px;
+}
+
+  
+  #budget-container {
+    left: 0;
+  }
+  
+  #currency-container {
+    left: 30%; /* Adjust based on the number of items and spacing */
+  }
+  
+  #duration-container {
+    left: 62%; /* Adjust based on the number of items and spacing */
+  }
+  
+  .info-item label {
+    margin: 0;
+    font-weight: bold;
+    
+  }
+  
+  .info-item input,
+  .info-item select {
+    width: 150px; /* Adjust width as needed */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  #submit-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  #submit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  h2 {
+    color: #333;
+  }
+  
+  /* .preferences-container {
+    position: absolute;
+    top: 650px;
+    left: 170px;
+  } */
+  
+  .preferences-row {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 20px; /* Adjust spacing between columns */
+  }
+  
+  .input-group {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .input-group label {
+    margin: 0;
+    font-weight: bold;
+    width: 150px; /* Adjust width as needed */
+  }
+  
+  .input-group input,
+  .input-group select {
+    width: 150px; /* Adjust width as needed */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  
+  #background-image-container {
+    background-image: url('images/trolltungA.jpg'); /* Path to your image */
+    background-size: cover;
+    background-position: center;
+    height: 300px; /* Adjust the height as needed */
+    width: 100%; /* Adjust the width as needed */
+    margin-bottom: 40px; /* Space below the image */
+  }
+  
+  .inline-container {
+    align-items: center; /* Aligns the items (h1 and p) vertically in the middle of the container */
+    gap: 10px; /* Adds space between the h1 and p elements */
+  }
+  
+  .inline-container h1 {
+    margin: 0; /* Removes the default margin from the h1 element */
+    font-size: 24px; /* Sets the font size of the h1 element */
+  }  
+  
+  .inline-container p {
+    margin: 0; /* Remove default margin */
+    font-size: 16px; /* Adjust the font size if needed */
+  }
+  #background-image-container {
+    background-image: url('trolltungA.jpg'); /* Path to your image */
+    background-size: cover;
+    background-position: center;
+    height: 300px; /* Adjust the height as needed */
+    width: 100%; /* Adjust the width as needed */
+    margin-bottom: 40px; /* Space below the image */
+
+  }
