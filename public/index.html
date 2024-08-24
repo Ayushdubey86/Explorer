@@ -8,10 +8,17 @@
 </head>
 <body>
     <div class="inline-container">
-        <h1>Explorer</h1>
-        <p style="margin-left: 29%;">You don't know where you're going, time to let it go, let us plan for you! Sit back and relax</p>
-        <div id="background-image-container"></div>
+      <div style="display: flex;padding-bottom: 10px;padding-top: 10px;">
+        <h1 style="margin-left: 10%;">Explorer</h1>
+        <h1 style="margin-left: 50%;">About</h1>
+        <h1 style="margin-left: 5%;">Contact</h1>
+      </div>
+        <div id="background-image-container">
+            <div class="centered-text">Time to let it go</div>
+            <div style="display: flex;">let us plan for you! Sit back and relax</div>
+        </div>
     </div>
+    
       
 
     <div id="app">
@@ -113,6 +120,8 @@
                         </select>
                     </div>
                 </div>
+                <div id="loader" style="display: none;">Preparing your itinerary...</div>
+
 
                 <button id="submit-button">Plan My Trip</button>
             </div>
