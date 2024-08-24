@@ -144,12 +144,25 @@ body {
     margin: 0; /* Remove default margin */
     font-size: 16px; /* Adjust the font size if needed */
   }
+  
   #background-image-container {
     background-image: url('trolltungA.jpg'); /* Path to your image */
-    background-size: cover;
+    /* background-size: contain; Ensures the whole image is visible */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
     background-position: center;
     height: 300px; /* Adjust the height as needed */
-    width: 100%; /* Adjust the width as needed */
+    width: 100%; /* Ensures the container takes full width */
     margin-bottom: 40px; /* Space below the image */
+    position: relative; /* To allow absolute positioning for the text */
+}
 
-  }
+.centered-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white; /* Adjust text color to stand out against the background */
+    font-size: 24px; /* Adjust font size as needed */
+    text-align: center; /* Center the text horizontally */
+}
+
