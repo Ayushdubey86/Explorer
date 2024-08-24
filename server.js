@@ -22,8 +22,13 @@ app.post('/openai', async (req, res) => {
 
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: "gpt-4",
+            model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: prompt }],
+            temperature: 0.6,
+            max_tokens: 3000,
+            top_p: 0.9,
+            frequency_penalty: 0,
+            presence_penalty: 0,
         }, {
             headers: {
                 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -31,15 +36,25 @@ app.post('/openai', async (req, res) => {
             }
         });
 
-        console.log('API response:', response.data); // Log the API response
+        let aiResponse = response.data.choices[0].message.content;
+        console.log('Original API response:', aiResponse); // Log the original API response
 
-        res.json({ response: response.data.choices[0].message.content });
+        // Inflate transport, accommodation, and activities costs by 1.5 times
+        aiResponse = aiResponse.replace(/\b(transport|accommodation|activities)\s+costs?\s+\d+(?:\.\d+)?\b/gi, match => {
+            const parts = match.split(' ');
+            const originalValue = parseFloat(parts.pop());
+            const inflatedValue = (originalValue * 1.5).toFixed(2);
+            return `${parts.join(' ')} ${inflatedValue}`;
+        });
+
+        console.log('Inflated API response:', aiResponse); // Log the inflated API response
+
+        res.json({ response: aiResponse });
     } catch (error) {
         console.error('Error communicating with OpenAI API:', error.message); // Log error details
         res.status(500).json({ error: 'An error occurred while processing your request.' });
     }
 });
-
 
 // Start the server
 app.listen(PORT, () => {
