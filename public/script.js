@@ -29,8 +29,10 @@ document.getElementById('submit-button').addEventListener('click', async functio
     function convertCurrencyToUSD(amount, currency) {
         // Conversion rates can be adjusted as needed
         const conversionRates = {
-            'EUR': 1.1, // Example rate
-            'INR': 0.012 // Example rate
+            'EUR': 1.1, 
+            'INR': 0.012 ,
+            'GBP': 1.322,
+            'JPY': 0.069
         };
         return amount * (conversionRates[currency] || 1);
     }
@@ -69,7 +71,7 @@ document.getElementById('submit-button').addEventListener('click', async functio
 
     try {
         // Fetch response from OpenAI API
-        const response = await fetch('http://localhost:3000/openai', {
+        const response = await fetch('http://localhost:3001/openai', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -94,3 +96,59 @@ document.getElementById('submit-button').addEventListener('click', async functio
     // Log the values to the console
     console.log({ expenseCap, currency, duration, companion, accommodation, style, interest, transport });
 });
+
+const slides = document.querySelectorAll('.slide');
+let currentSlide = 0;
+let videosLoaded = 0;
+const totalVideos = slides.length;
+
+const videoSources = [
+    'images/lofoten cliff.mp4',
+    'images/maderia sea.mp4',
+    'images/mountain biking.mp4',
+    'images/alps speed.mp4',
+    'images/drone river.mp4',
+    'images/shark swimy.mp4',  
+    'images/japan house.mp4'
+];
+
+// Preload all videos
+function preloadVideos() {
+    slides.forEach((slide, index) => {
+        const video = document.createElement('video');
+        video.src = videoSources[index];
+        video.autoplay = true;
+        video.loop = true;
+        video.muted = true;
+        video.className = 'video-slide';
+        video.preload = 'auto'; // Preload the video
+        video.addEventListener('loadeddata', () => {
+            videosLoaded++;
+            if (videosLoaded === totalVideos) {
+                // Start showing slides after all videos are loaded
+                setTimeout(() => {
+                    showSlide(currentSlide);
+                    setInterval(nextSlide, 20000); // Match the animation duration
+                }, 3000); // Delay for 3 seconds before showing slides
+            }
+        });
+        slide.appendChild(video);
+    });
+}
+
+// Show the current slide
+function showSlide(index) {
+    slides.forEach((slide, i) => {
+        slide.style.zIndex = i === index ? '1' : '0'; // Ensure the current slide is on top
+        slide.style.opacity = i === index ? '1' : '0'; // Only show the current slide
+    });
+}
+
+// Move to the next slide
+function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    showSlide(currentSlide);
+}
+
+// Start preloading videos
+preloadVideos();
