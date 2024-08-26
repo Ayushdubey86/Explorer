@@ -3,13 +3,26 @@ const express = require('express');
 const axios = require('axios');
 const path = require('path');
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/itinerary', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'itinerary.html'));
+});
+
+app.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'about', 'about.html'));
+});
+
+// Route for the contact page
+app.get('/contact', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'contact', 'constact.html'));
+});
 
 app.post('/openai', async (req, res) => {
     const prompt = req.body.prompt;
@@ -25,7 +38,7 @@ app.post('/openai', async (req, res) => {
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: prompt }],
             temperature: 0.6,
-            max_tokens: 3000,
+            max_tokens: 3001,
             top_p: 0.9,
             frequency_penalty: 0,
             presence_penalty: 0,
