@@ -14,10 +14,6 @@ body {
     position: relative;
   }
   
-  h1 {
-    text-align: center;
-    color: #333;
-  }
   
   section {
     margin: 20px 0;
@@ -121,24 +117,12 @@ body {
   }
   
   
-  #background-image-container {
-    background-image: url('images/trolltungA.jpg'); /* Path to your image */
-    background-size: cover;
-    background-position: center;
-    height: 300px; /* Adjust the height as needed */
-    width: 100%; /* Adjust the width as needed */
-    margin-bottom: 40px; /* Space below the image */
-  }
-  
+ 
   .inline-container {
     align-items: center; /* Aligns the items (h1 and p) vertically in the middle of the container */
     gap: 10px; /* Adds space between the h1 and p elements */
   }
   
-  .inline-container h1 {
-    margin: 0; /* Removes the default margin from the h1 element */
-    font-size: 24px; /* Sets the font size of the h1 element */
-  }  
   
   .inline-container p {
     margin: 0; /* Remove default margin */
@@ -161,8 +145,110 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: white; /* Adjust text color to stand out against the background */
+    color: #f4f4f4; /* Adjust text color to stand out against the background */
     font-size: 24px; /* Adjust font size as needed */
     text-align: center; /* Center the text horizontally */
 }
+
+.centered-text2{
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #f4f4f4; /* Adjust text color to stand out against the background */
+  font-size: 24px; /* Adjust font size as needed */
+  text-align: center; 
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.inline-container h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+h1 a {
+  display: inline-block;
+  width: 150px;
+  height: 60px;
+  border-radius: 10px;
+  background-image: linear-gradient(135deg, #00C9FF 0%, #cbd9cc 100%);
+  /* box-shadow: 0 20px 30px -6px rgba(0,201,255,0.5); */
+  
+  text-align: center;
+  line-height: 60px;
+  color: white;
+  text-decoration: none;
+  transition: all .3s ease-in-out;
+}
+
+h1 a:hover {
+  transform: translateY(10px);
+  box-shadow: none;
+}
+
+h1 a:active {
+  opacity: 0.5;
+}
+
+#background-image-container {
+  position: relative;
+  background-size: contain; /* Ensure the entire image fits within the container */
+  background-position: center center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  height: 70vh; /* Adjust to full viewport height or as needed */
+  width: 100%;
+  margin-bottom: 40px;
+  margin-top: 10px;
+  overflow: hidden; /* Hide any overflow */
+}
+
+
+@keyframes slide {
+  0% { transform: translateX(100%); } /* Start off-screen (right) */
+  5% { transform: translateX(0); }    /* Move to the center */
+  95% { transform: translateX(0); }   /* Stay in the center */
+  100% { transform: translateX(-100%); } /* Move off-screen (left) */
+}
+
+/* Add transition to smoothly change the opacity */
+/* Add this to your CSS */
+
+/* Initially hide slides */
+.slide {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 2s ease-in-out; /* Smooth transition for opacity */
+}
+
+/* Show slides when they are active */
+.slide-active {
+  opacity: 1;
+}
+
+/* Add styles for video */
+.video-slide {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+
+/* #slide1 { background-image: url('images/trolltungA.jpg'); } */
+/* #slide2 { background-image: url('images/your-image2.jpg'); } */
+/* #slide3 { background-image: url('images/alps\ speed.mp4'); } */
+#slide4 , #slide1 , #slide2 , #slide5,#slide6 , #slide7 , #slide8 , #slide9 , #slide10 { 
+  background: none; /* Remove background image */
+  background-color: #f4f4f4; /* Optional: Set a background color */
+}
+
 
