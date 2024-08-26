@@ -8,26 +8,48 @@
 </head>
 <body>
     <div class="inline-container">
-      <div style="display: flex;padding-bottom: 10px;padding-top: 10px;">
-        <h1 style="margin-left: 10%;">Explorer</h1>
-        <h1 style="margin-left: 50%;">About</h1>
-        <h1 style="margin-left: 5%;">Contact</h1>
-      </div>
-        <div id="background-image-container">
-            <div class="centered-text">Time to let it go</div>
-            <div style="display: flex;">let us plan for you! Sit back and relax</div>
+        <div style="display: flex; padding-bottom: 10px; padding-top: 10px;">
+            <h1 style="margin-left: 10%;margin-top: 8px;font-size: 30px;">Explorer</h1>
+            <h1 style="margin-left: 50%;"><a href="/about" style="text-decoration: none; color: inherit;" target="_blank">About</a></h1>
+            <h1 style="margin-left: 5%;"><a href="/contact" style="text-decoration: none; color: inherit;" target="_blank">Contact</a></h1>
         </div>
-    </div>
-    
-      
+        <div id="background-image-container">
+            <div id="slide1" class="slide">
+                <div class="centered-text">Take the Chance!</div>
+                <div class="centered-text2">Make the Jump</div>
+            </div>
+            <div id="slide2" class="slide">
+                <div class="centered-text">Trust Us to Plan Your Perfect Adventure</div>
+            </div>
+            <div id="slide3" class="slide">
+                <div class="centered-text">We’ll Plan Your Ultimate Adventure Experience!</div>
+            </div>
+            <div id="slide4" class="slide">
+                <div class="centered-text">Experience Thrilling Adventures with Our Expert Planning!</div>
+            </div>
+            <div id="slide8" class="slide">
+                <div class="centered-text">Explore Hidden Gems from Every Corner of the World!</div>
+            </div>
+            
+            <div id="slide5" class="slide">
+                <div class="centered-text">Enjoy Breathtaking Views on Your Next Adventure</div>
+            </div>
+            <!-- <div id="slide6" class="slide">
+                <div class="centered-text">Feel the Thrill from the Deepest Points of Exploration</div>
+            </div> -->
+            <!-- <div id="slide7" class="slide">
+                <div class="centered-text">Discover Hidden Gems Around the Globe!</div>
+            </div> -->
+            
+            <div id="slide9" class="slide">
+                <div class="centered-text">Uncover Hidden Gems Worldwide for an Unforgettable Journey!</div>
+            </div>
+        </div>
+        
 
     <div id="app">
-        <!-- Background Image Section -->
-      
-
         <h1>Plan Your Trip</h1>
 
-        <!-- Section 1: Budget, Duration, Currency -->
         <section id="basic-info">
             <div class="info-container">
                 <div class="info-item" id="resident-container">
@@ -58,9 +80,10 @@
         </section>
 
         <div class="inline-container">
-          <h1>Optional Preference</h1>
-          <p>for better predictability...</p>
-      </div>
+            <h1>Optional Preference</h1>
+            <p>For better predictability...</p>
+        </div>
+        
         <section id="optional-info">
             <div class="preferences-container">
                 <div class="preferences-row">
@@ -122,15 +145,11 @@
                 </div>
                 <div id="loader" style="display: none;">Preparing your itinerary...</div>
 
-
                 <button id="submit-button">Plan My Trip</button>
             </div>
         </section>
 
-        <!-- Itinerary Results -->
-        <div id="itinerary">
-            <!-- Itinerary results will be displayed here -->
-        </div>
+        <div id="itinerary"></div>
     </div>
     <script type="module" src="script.js"></script>
 </body>
