@@ -7,45 +7,24 @@
     <title>Trip Planner</title>
 </head>
 <body>
+ 
     <div class="inline-container">
-        <div style="display: flex; padding-bottom: 10px; padding-top: 10px;">
-            <h1 style="margin-left: 10%;margin-top: 8px;font-size: 30px;">Explorer</h1>
-            <h1 style="margin-left: 50%;"><a href="/about" style="text-decoration: none; color: inherit;" target="_blank">About</a></h1>
-            <h1 style="margin-left: 5%;"><a href="/contact" style="text-decoration: none; color: inherit;" target="_blank">Contact</a></h1>
+        <div class="header-navigation" >
+            <h1 class="explorer">Explorer</h1>
+            <h1 style="margin-left: 620px;"><a href="/visa" class="header-visa">Visa</a></h1>
+            <h1 style="margin-left: 4%;"><a href="/about" class="header-about" target="_blank">About</a></h1>
+            <h1 style="margin-left: 4%;"><a href="/contact" class="header-contact"  target="_blank">Contact</a></h1>
+            <h1></h1>
+           
         </div>
-        <div id="background-image-container">
-            <div id="slide1" class="slide">
-                <div class="centered-text">Take the Chance!</div>
-                <div class="centered-text2">Make the Jump</div>
-            </div>
-            <div id="slide2" class="slide">
-                <div class="centered-text">Trust Us to Plan Your Perfect Adventure</div>
-            </div>
-            <div id="slide3" class="slide">
-                <div class="centered-text">We’ll Plan Your Ultimate Adventure Experience!</div>
-            </div>
-            <div id="slide4" class="slide">
-                <div class="centered-text">Experience Thrilling Adventures with Our Expert Planning!</div>
-            </div>
-            <div id="slide8" class="slide">
-                <div class="centered-text">Explore Hidden Gems from Every Corner of the World!</div>
-            </div>
-            
-            <div id="slide5" class="slide">
-                <div class="centered-text">Enjoy Breathtaking Views on Your Next Adventure</div>
-            </div>
-            <!-- <div id="slide6" class="slide">
-                <div class="centered-text">Feel the Thrill from the Deepest Points of Exploration</div>
-            </div> -->
-            <!-- <div id="slide7" class="slide">
-                <div class="centered-text">Discover Hidden Gems Around the Globe!</div>
-            </div> -->
-            
-            <div id="slide9" class="slide">
-                <div class="centered-text">Uncover Hidden Gems Worldwide for an Unforgettable Journey!</div>
+        <button class="login-button" onclick="openLoginPopup()">Login</button>
+        <button class="Register-button" onclick="openRegisterPopup()">Register</button>
+        <div id="background-video-container">
+            <video id="background-video" autoplay muted></video>
+            <div id="video-overlay">
+                <h1 class="overlay-text"></h1>
             </div>
         </div>
-        
 
     <div id="app">
         <h1>Plan Your Trip</h1>
@@ -79,16 +58,12 @@
             </div>
         </section>
 
-        <div class="inline-container">
-            <h1>Optional Preference</h1>
-            <p>For better predictability...</p>
-        </div>
-        
-        <section id="optional-info">
-            <div class="preferences-container">
-                <div class="preferences-row">
-                    <div class="input-group">
-                        <label for="companion">Travel Companion</label>
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-header">More Optional Preference- Better outcome</button>
+                <div class="accordion-content">
+                    <div class="accordion-row">
+                        <label for="companion" class="label-dropdown">Travel Companion</label>
                         <select id="companion" name="companion">
                             <option value=""></option>
                             <option value="Solo">Solo</option>
@@ -96,10 +71,7 @@
                             <option value="Family">Family</option>
                             <option value="Group">Group</option>
                         </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="accommodation">Accommodation Type</label>
+                        <label for="accommodation" class="label-dropdown">Accommodation</label>
                         <select id="accommodation" name="accommodation">
                             <option value=""></option>
                             <option value="Hotel">Hotel</option>
@@ -107,10 +79,7 @@
                             <option value="Vacation Rental">Vacation Rental</option>
                             <option value="Camping">Camping</option>
                         </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="style">Travel Style</label>
+                        <label for="style" class="label-dropdown">Travel Style</label>
                         <select id="style" name="style">
                             <option value=""></option>
                             <option value="Adventure">Adventure</option>
@@ -118,11 +87,8 @@
                             <option value="Cultural">Cultural</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="preferences-row">
-                    <div class="input-group">
-                        <label for="interest">Interest Area</label>
+                    <div class="accordion-row">
+                        <label for="interest"  class="label-dropdown">Interest Area</label>
                         <select id="interest" name="interest">
                             <option value=""></option>
                             <option value="Historical Sites">Historical Sites</option>
@@ -131,10 +97,7 @@
                             <option value="Art and Culture">Art and Culture</option>
                             <option value="Shopping">Shopping</option>
                         </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="transport">Transport Preference</label>
+                        <label for="transport"  class="label-dropdown">Transport Preference</label>
                         <select id="transport" name="transport">
                             <option value=""></option>
                             <option value="Car Rental">Car Rental</option>
@@ -143,14 +106,47 @@
                         </select>
                     </div>
                 </div>
-                <div id="loader" style="display: none;">Preparing your itinerary...</div>
+            </div>        
+        </div>
 
-                <button id="submit-button">Plan My Trip</button>
-            </div>
-        </section>
+        <button id="submit-button">Plan My Trip</button>
 
-        <div id="itinerary"></div>
     </div>
-    <script type="module" src="script.js"></script>
+    </div>
+    <div id="loginPopup" class="login-popup">
+        <div class="login-popup-content">
+            <span class="close-popup" onclick="closeLoginPopup()">&times;</span>
+            <h2>Login</h2>
+            <input type="text" placeholder="Email" id="email" name="email" required>
+
+            <input type="password" placeholder="Password" id="password" name="password" required>
+
+            <button type="submit">Submit</button>
+        </div>
+    </div>
+    <div id="RegisterPopup" class="Register-popup">
+        <div class="register-popup-content">
+            <div id="registerForm">
+            <span class="close-popup" onclick="closeRegPopup()">&times;</span>
+            <h2>Register</h2>
+            <input type="text" placeholder="Email" id="emailReg" name="email" required>
+            <input type="password" placeholder="Password" id="passwordReg" name="password" required>
+
+            <!-- <button type="button" id="registerButton"  onclick="registerUser()">Register</button> -->
+            <button type="button" id="registerButton" >Register</button>
+            </div>
+            <div id="otpForm">
+            <input type="text" id="otp" placeholder="Enter OTP" required />
+            <button type="button" id="verifyOtpButton">Verify OTP</button>
+            </div>
+            <div id="message"></div>
+        </div>
+    </div>
+
+   
+
+</div>
+    
+    <script  src="script.js"></script>
 </body>
 </html>
