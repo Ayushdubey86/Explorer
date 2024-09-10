@@ -62,7 +62,7 @@ section {
   border-radius: 4px;
 }
 
-#submit-button {
+/* #submit-button {
   display: block;
   width: 20%;
   padding: 10px;
@@ -74,7 +74,7 @@ section {
   cursor: pointer;
   margin-top: 30px;
   margin-left: 960px;
-}
+} */
 
 #submit-button:hover {
   background-color: #0056b3;
@@ -465,4 +465,8 @@ l.register-popup-content button:hover {
 .header-visa:hover::after {
   transform: scaleX(1);
   transform-origin: bottom left;
+}
+
+#otpForm {
+  display: none;
 }
