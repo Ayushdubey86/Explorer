@@ -117,11 +117,11 @@
         <div class="login-popup-content">
             <span class="close-popup" onclick="closeLoginPopup()">&times;</span>
             <h2>Login</h2>
-            <input type="text" placeholder="Email" id="email" name="email" required>
+            <input type="text" placeholder="Email" id="emailLog" name="email" required>
 
             <input type="password" placeholder="Password" id="password" name="password" required>
 
-            <button type="submit">Submit</button>
+            <button type="submit" id="submit-login">Submit</button>
         </div>
     </div>
     <div id="RegisterPopup" class="Register-popup">
@@ -131,8 +131,6 @@
             <h2>Register</h2>
             <input type="text" placeholder="Email" id="emailReg" name="email" required>
             <input type="password" placeholder="Password" id="passwordReg" name="password" required>
-
-            <!-- <button type="button" id="registerButton"  onclick="registerUser()">Register</button> -->
             <button type="button" id="registerButton" >Register</button>
             </div>
             <div id="otpForm">
@@ -142,8 +140,6 @@
             <div id="message"></div>
         </div>
     </div>
-
-   
 
 </div>
     
