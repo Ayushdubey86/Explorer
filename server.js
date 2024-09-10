@@ -4,6 +4,7 @@ const axios = require('axios');
 const path = require('path');
 const { Pool } = require('pg');
 const nodemailer = require('nodemailer');
+const { log } = require('console');
 
 const app = express();
 const PORT = 3001;
@@ -77,14 +78,14 @@ app.post('/openai', async (req, res) => {
         console.log('Original API response:', aiResponse);
 
         // Inflate transport, accommodation, and activities costs by 1.5 times
-        aiResponse = aiResponse.replace(/\b(transport|accommodation|activities)\s+costs?\s+\d+(?:\.\d+)?\b/gi, match => {
-            const parts = match.split(' ');
-            const originalValue = parseFloat(parts.pop());
-            const inflatedValue = (originalValue * 1.5).toFixed(2);
-            return `${parts.join(' ')} ${inflatedValue}`;
-        });
+        // aiResponse = aiResponse.replace(/\b(transport|accommodation|activities)\s+costs?\s+\d+(?:\.\d+)?\b/gi, match => {
+        //     const parts = match.split(' ');
+        //     const originalValue = parseFloat(parts.pop());
+        //     const inflatedValue = (originalValue * 1.5).toFixed(2);
+        //     return `${parts.join(' ')} ${inflatedValue}`;
+        // });
 
-        console.log('Inflated API response:', aiResponse);
+        // console.log('Inflated API response:', aiResponse);
 
         res.json({ response: aiResponse });
     } catch (error) {
@@ -94,11 +95,10 @@ app.post('/openai', async (req, res) => {
 });
 
 
-
 // Example route to fetch data from PostgreSQL
 app.get('/data', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM your_table'); // Replace with your query
+        const result = await pool.query('SELECT * FROM users'); // Replace with your query
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching data from PostgreSQL', error.stack);
@@ -106,33 +106,60 @@ app.get('/data', async (req, res) => {
     }
 });
 
-app.post('/verify-otp', (req, res) => {
-    const { email, otp } = req.body;
+app.post('/verify-otp', async (req, res) => {
+    const { email, otp, password } = req.body;
 
     // Debugging logs
     console.log('Email:', email);
+    console.log('PASSWORD:', password); // This should output the password
     console.log('Entered OTP:', otp);
     console.log('Stored OTP:', otps[email]?.otp);
     console.log('OTP Expiry Time:', otps[email]?.expiresAt);
     console.log('Current Time:', Date.now());
 
-    // Check if OTP exists for the email and matches the entered OTP
-    if (!otps[email] || otps[email].otp !== otp) {
-        return res.status(400).json({ message: 'Invalid or expired OTP' });
+       // Check if password is missing
+       if (!password) {
+        return res.status(400).json({ message: 'Password is required' });
     }
 
-    // Check if the OTP has expired
-    if (Date.now() > otps[email].expiresAt) {
-        // If expired, remove the OTP and return an error
+    // // Check if OTP exists for the email and matches the entered OTP
+    // if (!otps[email] || otps[email].otp !== otp) {
+    //     return res.status(400).json({ message: 'Invalid or expired OTP' });
+    // }
+
+    // // Check if the OTP has expired
+    // if (Date.now() > otps[email].expiresAt) {
+    //     // If expired, remove the OTP and return an error
+    //     delete otps[email];
+    //     return res.status(400).json({ message: 'Invalid or expired OTP time' });
+    // }
+
+    // // OTP is valid and not expired
+    // delete otps[email]; // Optionally delete OTP after successful verification
+    // return res.status(200).json({ message: 'OTP verified successfully' });
+
+    try {
+        // Insert email and plain password into the database
+        console.log('inside try');
+        
+        const insertQuery = 'INSERT INTO users (email, password) VALUES ($1, $2)';
+        console.log('after insert query', insertQuery);
+        
+        await pool.query(insertQuery, [email, password]);
+
+        // Clean up the stored OTP for this email
         delete otps[email];
-        return res.status(400).json({ message: 'Invalid or expired OTP time' });
+
+        // Send a success response
+        return res.status(200).json({ message: 'OTP verified and user registered successfully' });
+    } catch (error) {
+        console.error('Error saving user:', error.stack);
+        return res.status(500).json({ message: 'An error occurred while saving the user' });
     }
 
-    // OTP is valid and not expired
-    delete otps[email]; // Optionally delete OTP after successful verification
-    return res.status(200).json({ message: 'OTP verified successfully' });
-});
 
+
+});
 
 app.post('/register', (req, res) => {
     const { email, password } = req.body;
@@ -165,6 +192,57 @@ app.post('/register', (req, res) => {
     });
 });
 
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    
+    
+    try {
+        // Query the user by email from the database
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+
+        if (result.rows.length > 0) {
+            const user = result.rows[0];
+
+            // Compare the provided password with the password stored in the database (plain text)
+            if (password === user.password) {
+                // Password matches
+                return res.status(200).json({ message: 'Login successful' });
+            } else {
+                // Password does not match
+                return res.status(401).json({ message: 'Wrong email or password' });
+            }
+        } else {
+            // User not found
+            return res.status(404).json({ message: 'Wrong email or password' });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.post('/storeTripData', async (req, res) => {
+
+    console.log('check');
+    
+    const { email, currency, expenseCap, residentvar, duration, companion, accommodation, style, interest, transport } = req.body;
+
+    console.log('check2');
+    
+
+    const query = `
+        INSERT INTO user_trip_details (email, currency, expense_cap, resident_var, duration, companion, accommodation, style, interest, transport)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    `;
+
+    try {
+        await pool.query(query, [email, currency, expenseCap, residentvar, duration, companion, accommodation, style, interest, transport]);
+        res.status(200).send({ message: 'Trip data stored successfully!' });
+    } catch (error) {
+        console.error('Error storing trip data:', error);
+        res.status(500).send({ message: 'Error storing trip data' });
+    }
+});
 
 
 // Start the server
