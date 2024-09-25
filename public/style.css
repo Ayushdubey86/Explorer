@@ -470,3 +470,7 @@ l.register-popup-content button:hover {
 #otpForm {
   display: none;
 }
+
+.prev-iti {
+  display: none; /* Initially hidden */
+}
