@@ -31,6 +31,10 @@
 
         <section id="basic-info">
             <div class="info-container">
+                <div class="info-item" id="">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="Maybe Location you want to travel"> 
+                </div>
                 <div class="info-item" id="resident-container">
                     <label for="resident">Resident</label>
                     <input type="text" id="resident" placeholder="Current Resident">
@@ -140,9 +144,11 @@
             <div id="message"></div>
         </div>
     </div>
-
+    <div id="previousIti" class="prev-iti">
+       <button>Previous Itinerary</button>
+    </div>
 </div>
-    
-    <script  src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script  src="script.js"></script>
 </body>
 </html>
