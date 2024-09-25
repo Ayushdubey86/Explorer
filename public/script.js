@@ -16,57 +16,6 @@ function checkSearchLimit() {
     return true;
 }
 
-
-// Trigger the search functionality when "Plan My Trip" button is clicked
-// document.getElementById('submit-button').addEventListener('click', async function () {
-//     // Check search limit before proceeding
-//     if (!checkSearchLimit()) {
-//         return; // Prevent further searches without login/registration
-//     }
-
-//     const newWindow = window.open('/itinerary', '_blank'); 
-
-//     if (!newWindow) {
-//         console.error("Failed to open new window. It may have been blocked by a popup blocker.");
-//         return; 
-//     }
-
-//     const residentvar = document.getElementById('resident').value || 'anywhere in the world';
-//     const expenseCap = parseFloat(document.getElementById('expense-cap').value) || 10000;
-//     const currency = document.getElementById('currency').value || 'USD';
-//     const duration = document.getElementById('duration').value || 'not specified';
-//     const companion = document.getElementById('companion').value || 'Alone';
-//     const accommodation = document.getElementById('accommodation').value || 'not specified';
-//     const style = document.getElementById('style').value || 'not specified';
-//     const interest = document.getElementById('interest').value || 'not specified';
-//     const transport = document.getElementById('transport').value || 'not specified';
-
-//     // Fetch itinerary
-//     try {
-//         const response = await fetch('http://localhost:3001/openai', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({ prompt: prompt })
-//         });
-
-//         const data = await response.json();
-
-//         // Send itinerary data to the new window
-//         if (newWindow) {
-//             newWindow.postMessage(data.response, '*');
-//         }
-//     } catch (error) {
-//         console.error('Error fetching the itinerary:', error);
-//         if (newWindow) {
-//             newWindow.close(); 
-//         }
-//     }
-
-//     console.log({ expenseCap, currency, duration, companion, accommodation, style, interest, transport });
-// });
-
 document.getElementById('submit-button').addEventListener('click', async function () {
     if (!checkSearchLimit()) {
         return; // Prevent further searches without login/registration
@@ -79,8 +28,11 @@ document.getElementById('submit-button').addEventListener('click', async functio
         return; 
     }
 
+    localStorage.setItem('itineraryResponse', JSON.stringify({ status: 'loading' }));
+
+    const travelto = document.getElementById('location').value || 'anywhere in the world';
     const residentvar = document.getElementById('resident').value || 'anywhere in the world';
-    const expenseCap = document.getElementById('expense-cap').value || '1000';
+    const expenseCap = document.getElementById('expense-cap').value || '0';
     const currency = document.getElementById('currency').value || 'USD';
     const duration = document.getElementById('duration').value || 'not specified';
     const companion = document.getElementById('companion').value || 'Alone';
@@ -89,82 +41,139 @@ document.getElementById('submit-button').addEventListener('click', async functio
     const interest = document.getElementById('interest').value || 'not specified';
     const transport = document.getElementById('transport').value || 'not specified';
 
-  // Base prompt creation function
-  function createBasePrompt() {
-    let baseText = '';
+    // Base prompt creation function
+    function createBasePrompt() {
+        let baseText = `Could you please give me an itinerary for these fields.`;
 
-    if (residentvar !== 'anywhere in the world') {
-        baseText += `I am a resident of ${residentvar}. `;
+        if (travelto !== 'anywhere in the world') {
+            baseText += ` I want to travel to ${travelto}.`;
+        } else {
+            baseText += ` Anywhere to travel in the world, can be next to home city, or another hemisphere. Please decide this based on the budget.`;
+        }
+
+        if (residentvar !== 'anywhere in the world') {
+            baseText += ` I am a resident of ${residentvar}. `;
+        }
+   
+        
+
+        if (expenseCap !== '10000' || currency !== 'USD') {
+            baseText += ` I have a budget of ${expenseCap} ${currency}. `;
+        }
+
+        if (duration !== 'not specified') {
+            baseText += ` The trip will last ${duration} days. `;
+        }
+
+        if (companion !== 'Alone') {
+            if (companion === 'Solo') {
+                baseText += ` I will be traveling solo.`;
+            }
+            if (companion === 'Couple') {
+                baseText += ` I will be traveling with another person, please include places that are couple-friendly and adjust the budget accordingly.`;
+            }
+            if (companion === 'Family') {
+                baseText += ` I will be traveling with family, please include family-friendly places and adjust the budget accordingly.`;
+            }
+            if (companion === 'Group') {
+                baseText += ` I will be traveling with a group, please include places accessible to groups and adjust the budget accordingly.`;
+            }
+        }
+
+        if (accommodation !== 'not specified') {
+            if (accommodation === 'Hotel') {
+                baseText += ` I would prefer staying in hotels, please suggest hotels for staying.`;
+            }
+            if (accommodation === 'Hostel') {
+                baseText += ` I would prefer staying in hostels, please suggest hostels.`;
+            }
+            if (accommodation === 'Vacation Rental') {
+                baseText += ` I would prefer staying in a vacation rental, please suggest this kind of accommodation.`;
+            }
+            if (accommodation === 'Camping') {
+                baseText += ` I would prefer camping for my accommodation, please suggest camping areas.`;
+            }
+        }
+
+        if (style !== 'not specified') {
+            if (style === 'Adventure') {
+                baseText += ` Please include adventure sports like Downhill Skateboarding, Cave Diving, Speed Flying, Bungee Jumping, Via Ferrata, Megavalanche, Wingsuit Flying, Heli-Skiing, Whitewater Rafting, and Ice Climbing if possible.`;
+            }
+            if (style === 'Relaxation') {
+                baseText += ` Please include relaxation activities like yoga, serene peaceful beaches, zen gardens, and spa treatments.`;
+            }
+            if (style === 'Cultural') {
+                baseText += ` Please include cultural activities such as Tibetan monasteries, Byzantine religious traditions, etc.`;
+            }
+        }
+
+        if (interest !== 'not specified') {
+            if (interest === 'Historical Sites') {
+                baseText += ` Please include UN historical sites in the city or country.`;
+            }
+            if (interest === 'Nature and Hiking') {
+                baseText += ` Please include nature spots and hiking trails in the itinerary.`;
+            }
+            if (interest === 'Food and Wine') {
+                baseText += ` Please include places where I can enjoy food and fine wine.`;
+            }
+            if (interest === 'Art and Culture') {
+                baseText += ` Please include arts and culture places in the city or country.`;
+            }
+            if (interest === 'Shopping') {
+                baseText += ` Please include shopping spots, including antiques, clothes, and paintings.`;
+            }
+        }
+
+        if (transport !== 'not specified') {
+            if (transport === 'Car Rental') {
+                baseText += ` Please include car rental transportation between cities if possible.`;
+            }
+            if (transport === 'Public Transport') {
+                baseText += ` Please include public transportation within and between cities if possible.`;
+            }
+            if (transport === 'Walking/Biking') {
+                baseText += ` Please include walking or biking transportation within the city.`;
+            }
+        }
+
+        baseText += ` Please include detailed travel plans, such as "Day 1: travel from hometown to destination, stay in a hotel, etc.", with hostel stays priced around $15. At the end of the trip, I would like to return home with all expenses included. Prompt should be around 3000 characters.`;
+
+        console.log(baseText);
+        return baseText;
     }
 
-    if (expenseCap !== 10000 || currency !== 'USD') {
-        baseText += `I have a budget of ${expenseCap} ${currency}. `;
-    }
-
-    if (duration !== 'not specified') {
-        baseText += `The trip will last ${duration} days. `;
-    }
-
-    baseText += `Could you give me an itinerary that I can explore, which can be anywhere in the world or near ${residentvar}? I would appreciate it if you could include both hidden gems and famous places in the itinerary.`;
-
-    baseText += ` Please include detailed travel plans, such as "Day 1: hometown to location, you can see this, stay in a hotel/hostel [name], Day 2: breakfast, travel to hike mountain, great view...etc.", with hostel stays priced around $15. At the end of the trip, I would like to return home with all expenses included.`;
-
-    baseText += ` Also, please suggest local or famous cuisines I could try at each place. At the end, kindly provide a breakdown of all expenses, e.g., transportation $300, food $50, local sightseeing $50, etc. Please ensure that each day includes detailed accommodation suggestions, including hostel/hotel names and prices. Transportation doesn't have to be by flight; road travel is fine too.`;
-
-    return baseText;
-}
-
-// Custom prompt creation function
-function customPrompt() {
-    let customText = `I am a resident of ${residentvar}. I have a budget of ${expenseCap} ${currency} for a trip lasting ${duration} days.`;
-    
-    if (companion !== 'Alone') {
-        customText += ` I will be traveling with ${companion}.`;
-    }
-
-    if (accommodation !== 'not specified') {
-        customText += ` I would prefer staying in ${accommodation} accommodations.`;
-    }
-
-    if (style !== 'not specified') {
-        customText += ` My preferred travel style is ${style}.`;
-    }
-
-    if (interest !== 'not specified') {
-        customText += ` I am particularly interested in ${interest}.`;
-    }
-
-    if (transport !== 'not specified') {
-        customText += ` I prefer to travel by ${transport}.`;
-    }
-
-    customText += ` Could you create an itinerary that includes both hidden gems and famous places, with detailed travel and accommodation suggestions, including hostel/hotel names and prices? Please also include local or famous cuisine suggestions for each location, and a breakdown of all expenses.`;
-
-    return customText;
-}
-
-// Decide between base or custom prompt
-  let prompt = (companion !== 'Alone' || accommodation !== 'not specified' || style !== 'not specified' || interest !== 'not specified' || transport !== 'not specified') ? customPrompt() : createBasePrompt();
+    // Generate the prompt text
+    const prompt = createBasePrompt();
+    const secretKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';  // Make sure to use a secure key that is not exposed
 
     try {
+
+        const encryptedPrompt = CryptoJS.AES.encrypt(JSON.stringify(prompt), secretKey).toString();
+    
+    
         // Fetch itinerary without storing data if user is not logged in
         const response = await fetch('http://localhost:3001/openai', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ prompt })
+            body: JSON.stringify({ prompt: encryptedPrompt }) // Use the prompt generated from createBasePrompt
         });
 
         const data = await response.json();
 
+        const itineraryResponse = data.response;
+
+        // Store the response in localStorage
+        localStorage.setItem('itineraryResponse', JSON.stringify({ status: 'success', data: itineraryResponse }));
+
         // If user is logged in, store their search data
         const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-        const email = sessionStorage.getItem('emailLog');
+        const email = localStorage.getItem('emailLog');
 
         console.log(isLoggedIn);
         console.log(email);
-        
 
         if (isLoggedIn && email) {
             await fetch('/storeTripData', {
@@ -173,6 +182,7 @@ function customPrompt() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    travelto,
                     email,
                     currency,
                     expenseCap,
@@ -185,6 +195,7 @@ function customPrompt() {
                     transport
                 })
             });
+
         }
 
         // Handle itinerary display logic here
@@ -193,7 +204,6 @@ function customPrompt() {
         console.error('Error fetching the itinerary:', error);
     }
 });
-
 
 
 document.querySelector('.inline-container h1').addEventListener('click', function() {
@@ -260,8 +270,9 @@ window.onclick = function(event) {
  }
 
 const videoSources = [
-    'images/alps speed.mp4',
-    'images/shark swimy.mp4'
+    
+    'images/lofoten cliff.mp4',
+    //'images/shark swimy.mp4'
 ];
 
 const overlayTexts = [
@@ -331,40 +342,39 @@ document.getElementById('registerButton').addEventListener('click', () => {
 });
 
 // Login
-document.getElementById('submit-login').addEventListener('click', () => {
-    const email = document.getElementById('emailLog').value;
-    console.log('email in login ', email);
+// document.getElementById('submit-login').addEventListener('click', () => {
+//     const email = document.getElementById('emailLog').value;
+//     console.log('email in login ', email);
     
-    const password = document.getElementById('password').value;
+//     const password = document.getElementById('password').value;
 
-    fetch('/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message === 'Login successful') {
-            console.log('Login successful');
-            closeLoginPopup();
-            document.querySelector('.login-button').style.display = 'none'; // Hide the login btn
-            document.querySelector('.Register-button').style.display = 'none'; // Hide the Register button
+//     fetch('/login', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ email, password }),
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.message === 'Login successful') {
+//             console.log('Login successful');
+//             closeLoginPopup();
+//             document.querySelector('.login-button').style.display = 'none'; // Hide the login btn
+//             document.querySelector('.Register-button').style.display = 'none'; // Hide the Register button
 
-            // Set session storage to allow searches
-            sessionStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('emailLog', email);
-            // Optionally redirect or perform another action
-        } else {
-            console.log('Wrong email/password');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-});
-
+//             // Set session storage to allow searches
+//             sessionStorage.setItem('isLoggedIn', 'true');
+//             localStorage.setItem('emailLog', email);
+//             // Optionally redirect or perform another action
+//         } else {
+//             console.log('Wrong email/password');
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//     });
+// });
 
 document.getElementById('verifyOtpButton').addEventListener('click', () => {
     const email = document.getElementById('emailReg').value;
@@ -409,3 +419,82 @@ function convertCurrencyToUSD(amount, currency) {
     };
     return amount * (conversionRates[currency] || 1);
 }
+
+// function setCookie(name, value, days) {
+//     const date = new Date();
+//     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Set the cookie expiration in days
+//     const expires = "expires=" + date.toUTCString();
+//     document.cookie = name + "=" + value + ";" + expires + ";path=/"; // Set the cookie for the entire site
+// }
+
+
+// Login
+document.getElementById('submit-login').addEventListener('click', () => {
+    const email = document.getElementById('emailLog').value;
+    const password = document.getElementById('password').value;
+
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === 'Login successful') {
+            console.log('Login successful');
+          
+
+            closeLoginPopup();
+            document.querySelector('.login-button').style.display = 'none'; // Hide the login button
+            document.querySelector('.Register-button').style.display = 'none'; // Hide the Register button
+
+            // Set session storage to allow searches
+            sessionStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('emailLog', email);
+
+            // Check for previous itinerary after successful login
+            checkForPreviousItinerary(email);
+        } else {
+            console.log('Wrong email/password');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+function checkForPreviousItinerary(email) {
+    fetch('/checkItinerary', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.hasItinerary) {
+            // Show the "Previous Itinerary" button if user has itinerary data
+            document.querySelector('.prev-iti').style.display = 'block';
+        } else {
+            // Hide the button if no itinerary exists (optional, in case hidden by default)
+            document.querySelector('.prev-iti').style.display = 'none';
+        }
+    })
+    .catch(error => {
+        console.error('Error checking itinerary:', error);
+    });
+}
+
+
+document.querySelector('.prev-iti button').addEventListener('click', () => {
+    const newWindow2 = window.open('/histprompt', '_blank'); 
+
+    if (!newWindow2) {
+        console.error("Failed to open new window. It may have been blocked by a popup blocker.");
+        return; 
+    }
+})
+
