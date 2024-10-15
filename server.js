@@ -11,10 +11,11 @@ const session = require('express-session');
 const app = express();
 const PORT = 3001;
 const CryptoJS = require('crypto-js');
-
+const encryptionKey = process.env.CRYPTOloc;
 const otps = {};
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-const secretKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc'; //to be more encrypted
+const secretKey = process.env.CRYPTOJSP; //to be more encrypted
+const encrypTrip = process.env.CRYPTOloc;
 // Create a new pool instance with your PostgreSQL configuration
 const pool = new Pool({
     user: process.env.PG_USER,
@@ -57,7 +58,22 @@ app.use(express.json());
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.static('images'));
+// app.use(express.static('images'));
+
+
+app.get('/refresh', (req, res) => {
+    // You can generate the key here or fetch it securely from a database or environment variable
+    // You can make this dynamic or more secure
+         
+    res.json({ key: encryptionKey });
+});
+
+app.get('/trip',(req,res)=>{
+   
+    res.json({ key:encrypTrip });
+})
+
+
 
 // Define routes
 app.get('/itinerary', (req, res) => {
@@ -69,80 +85,103 @@ app.get('/histprompt', (req, res) => {
 });
 
 app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname,'about', 'about.html'));
+    res.sendFile(path.join(__dirname,'public', 'about','about.html'));
 });
 
 app.get('/contact', (req, res) => {
-    res.sendFile(path.join(__dirname,'contact', 'contact.html'));
+    res.sendFile(path.join(__dirname,'public','contact', 'contact.html'));
+});
+
+app.get('/visa', (req, res) => {
+    res.sendFile(path.join(__dirname,'visa', 'visa.html'));
 });
 
 app.post('/openai', async (req, res) => {
-    //const prompt = req.body.prompt;
+    const prompt = req.body.prompt;
+   
+    console.log(prompt);
 
-    // const bytes = CryptoJS.AES.decrypt(prompt, secretKey);
-    // const decryptedPrompt = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    console.log("test openAi");
+    
+    const secKey='fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';
+    console.log('chk');
+    
+    const bytes = CryptoJS.AES.decrypt(prompt, secKey);
+    const decryptedPrompt = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 
-    // console.log('Decrypted Prompt:', decryptedPrompt);
+    console.log('Decrypted Prompt:', decryptedPrompt);
 
 
-    // if (!process.env.OPENAI_API_KEY) {
-    //     return res.status(500).json({ error: 'OpenAI API key is missing.' });
-    // }
+    if (!process.env.OPENAI_API_KEY) {
+        return res.status(500).json({ error: 'OpenAI API key is missing.' });
+    }
 
-    // console.log('Received prompt:', prompt);
+    console.log('Received prompt:', prompt);
 
-    // try {
-    //     const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-    //         model: "gpt-3.5-turbo",
-    //         messages: [{ role: "user", content: decryptedPrompt }],
-    //         temperature: 0.6,
-    //         max_tokens: 3001,
-    //         top_p: 0.9,
-    //         frequency_penalty: 0,
-    //         presence_penalty: 0,
-    //     }, {
-    //         headers: {
-    //             'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-    //             'Content-Type': 'application/json'
-    //         }
-    //     });
+    try {
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: decryptedPrompt }],
+            temperature: 0.6,
+            max_tokens: 3001,
+            top_p: 0.9,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+        }, {
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-    //     let aiResponse = response.data.choices[0].message.content;
-    //     console.log('Original API response:', aiResponse);
+        let aiResponse = response.data.choices[0].message.content;
+        // console.log('');
 
-    //     res.json({ response: aiResponse });
-    // } catch (error) {
-    //     console.error('Error communicating with OpenAI API:', error.message);
-    //     res.status(500).json({ error: 'An error occurred while processing your request.' });
-    // }
+        console.log('Original API response:', aiResponse);
 
-    let aiResponse='chk';
-    res.json({ response: aiResponse });
+        res.json({ response: aiResponse });
+    } catch (error) {
+        console.error('Error communicating with OpenAI API:', error.message);
+        res.status(500).json({ error: 'An error occurred while processing your request.' });
+    }
+
+   // res.json({ response: 'test' });
+    
 });
 
 app.post('/verify-otp', async (req, res) => {
     const { email, otp, password } = req.body;
 
-    // Debugging logs
-    console.log('Email:', email);
-    console.log('PASSWORD:', password); // This should output the password
-    console.log('Entered OTP:', otp);
-    console.log('Stored OTP:', otps[email]?.otp);
-    console.log('OTP Expiry Time:', otps[email]?.expiresAt);
-    console.log('Current Time:', Date.now());
+    // const secver = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';
 
-       // Check if password is missing
-       if (!password) {
-        return res.status(400).json({ message: 'Password is required' });
-    }
+    // const emailDec = CryptoJS.AES.decrypt(email, secver);
+    // const decryptedEmail = JSON.parse(emailDec.toString(CryptoJS.enc.Utf8));
+
+    // const emailPass = CryptoJS.AES.decrypt(password, secver);
+    // const emailPassw = JSON.parse(emailPass.toString(CryptoJS.enc.Utf8));
+
+    // const decOtp = CryptoJS.AES.decrypt(otp, secver);
+    // const decOtpFin = JSON.parse(decOtp.toString(CryptoJS.enc.Utf8));
+
 
     try {
-        // Insert email and plain password into the database
-        console.log('inside try');
-        
+
+
+        // Debugging logs
+        console.log('Email:', email);
+        console.log('Password:', password); 
+        console.log('OTP:', otp); 
+        console.log('Current Time:', Date.now());
+
+        // Check if the password is missing
+        if (!password) {
+            return res.status(400).json({ message: 'Password is required' });
+        }
+
+        // OTP verification logic can go here (check stored OTP against decryptedOtp)
+
+        // Insert decrypted email and password into the database
         const insertQuery = 'INSERT INTO users (email, password) VALUES ($1, $2)';
-        console.log('after insert query', insertQuery);
-        
         await pool.query(insertQuery, [email, password]);
 
         // Clean up the stored OTP for this email
@@ -154,47 +193,99 @@ app.post('/verify-otp', async (req, res) => {
         console.error('Error saving user:', error.stack);
         return res.status(500).json({ message: 'An error occurred while saving the user' });
     }
-
-
-
 });
 
 app.post('/register', (req, res) => {
-    const { email, password } = req.body;
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    try {
+        // Log incoming request body
+        console.log('Received request:', req.body);
 
-    // Store OTP with expiry time (5 minutes)
-    otps[email] = { otp, expiresAt: Date.now() + 300000 };
+        const { email, password } = req.body;
 
-    // Send OTP via email
-    const transporter = nodemailer.createTransport({
-        service: process.env.DUMMY_GEN , // Or your email service provider
-        auth: {
-            user: process.env.DUMMY_EMAIL, // Replace with your email
-            pass: process.env.DUMMY_PASSWORD, // Replace with your email password
-        },
-    });
-
-    const mailOptions = {
-        from: process.env.DUMMY_EMAIL,
-        to: email,
-        subject: 'Your OTP for Registration',
-        text: `Your OTP is: ${otp}`,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return res.status(500).json({ message: 'Failed to send OTP', error });
+        // Ensure both email and password are present
+        if (!email || !password) {
+            console.error('Missing email or password');
+            return res.status(400).json({ message: 'Email and password are required' });
         }
-        res.status(200).json({ message: 'OTP sent to email' });
-    });
+
+        console.log('Email:', email);
+        console.log('Password:', password); // Be careful logging passwords in production!
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Log OTP generation
+        console.log('Generated OTP:', otp);
+
+        // Store OTP with expiry time (5 minutes)
+        otps[email] = { otp, expiresAt: Date.now() + 300000 };
+        console.log('OTP stored for email:', email);
+
+        // Log transporter setup
+        console.log('Setting up email transporter...');
+        const transporter = nodemailer.createTransport({
+            service: 'smtp.outlook.com',//process.env.DUMMY_GEN, // Or your email service provider
+            port: 587,
+         //   secure: true,
+            auth: {
+                user: process.env.DUMMY_EMAIL, // Replace with your email
+                pass: process.env.DUMMY_PASSWORD, // Replace with your email password
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.DUMMY_EMAIL,
+            to: email,
+            subject: 'Your OTP for Registration',
+            text: `Your OTP is: ${otp}`,
+        };
+
+        // Log mail options before sending
+        console.log('Mail options:', mailOptions);
+
+        // Send email
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error.message);
+                if (error.code === 'ETIMEDOUT') {
+                    // Retry logic here
+                    console.log('Retrying to send email...');
+                    // You can reattempt the sendMail or use an exponential backoff strategy
+                }
+                return res.status(500).json({ message: 'Failed to send OTP', error });
+            }
+
+            // Log success response from nodemailer
+            console.log('Email sent successfully:', info.response);
+            res.status(200).json({ message: 'OTP sent to email' });
+        });
+    } catch (error) {
+        // Log any unexpected errors
+        console.error('Unexpected error occurred:', error);
+        return res.status(500).json({ message: 'Internal server error', error });
+    }
 });
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
+
+    // const secKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';
+    
+    // // Decrypt the email and password
+    // const decryptedEmailBytes = CryptoJS.AES.decrypt(email, secKey);
+    // const decryptedEmail = decryptedEmailBytes.toString(CryptoJS.enc.Utf8);
+
+    // const decryptedPasswordBytes = CryptoJS.AES.decrypt(password, secKey);
+    // const decryptedPassword = decryptedPasswordBytes.toString(CryptoJS.enc.Utf8);
     
     
     try {
+
+        // const decryptedEmailBytes = CryptoJS.AES.decrypt(email, secKey);
+        // const decryptedEmail = decryptedEmailBytes.toString(CryptoJS.enc.Utf8);
+    
+        // const decryptedPasswordBytes = CryptoJS.AES.decrypt(password, secKey);
+        // const decryptedPassword = decryptedPasswordBytes.toString(CryptoJS.enc.Utf8);
+        
         // Query the user by email from the database
         const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
@@ -239,6 +330,8 @@ app.post('/storeTripData', async (req, res) => {
         const result =  await pool.query(query, [email, currency, expenseCap, residentvar, duration, companion, accommodation, style, interest, transport,travelto]);
      
         const userTripId = result.rows[0].id; 
+        console.log('usertrip',userTripId);
+        
 
         req.session.userTripId = userTripId;
         res.status(200).send({ message: 'Trip data stored successfully!', userTripId });
@@ -250,19 +343,26 @@ app.post('/storeTripData', async (req, res) => {
 });
 
 app.get('/getUserTripId', (req, res) => {
+   // console.log(req.session);
+   console.log('check session');
+   
+    
+    console.log('req.session', req.session);
+    
     if (req.session.userTripId) {
         res.status(200).json({ userTripId: req.session.userTripId });
-    } else {
-        res.status(404).json({ message: 'No userTripId found in session' });
-    }
+    } 
+    // else {
+    //     res.status(404).json({ message: 'No userTripId found in session' });
+    // }
 });
 
 app.post('/storeItineraryData', async (req, res) => {
     const { userTripId, itineraryData,email } = req.body;  // Now expecting userTripId instead of email
 
-    if (!userTripId) {
-        return res.status(400).send({ message: 'userTripId is required to store itinerary data.' });
-    }
+    // if (!userTripId) {
+    //     return res.status(400).send({ message: 'userTripId is required to store itinerary data.' });
+    // }
 
     const query = `
         INSERT INTO trip_itinerary (user_trip_id, email,itinerary_data)
@@ -302,11 +402,28 @@ app.post('/checkItinerary', async (req, res) => {
     }
 });
 
+// GET /getUserEmail - Check if email is stored in the session and return it
 app.get('/getUserEmail', (req, res) => {
-    if (req.session.email) {
-        res.status(200).json({ email: req.session.email });
+    const email = req.session.email; // Get the email from the session
+
+    if (email) {
+        res.status(200).json({ email });
     } else {
         res.status(404).json({ message: 'No email found in session' });
+    }
+});
+
+
+app.post('/passOn', (req, res) => {
+    const { email } = req.body;
+
+    if (email) {
+        // Store email in the session
+        req.session.email = email;
+        console.log('Email stored in session:', email);
+        return res.status(200).json({ message: 'Email stored successfully' });
+    } else {
+        return res.status(400).json({ message: 'Email not provided' });
     }
 });
 
@@ -332,6 +449,39 @@ app.post('/getItineraries', async (req, res) => {
         res.status(500).json({ message: 'Error fetching itineraries' });
     }
 });
+
+app.post('/visaHelp', async (req,res)=>{
+    const prompt = req.body.prompt;
+    // if (!process.env.OPENAI_API_KEY) {
+    //         return res.status(500).json({ error: 'OpenAI API key is missing.' });
+    //     }
+
+    console.log('Received prompt:', prompt);
+        try {
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.6,
+            max_tokens: 3001,
+            top_p: 0.9,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+        }, {
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        let aiResponse = response.data.choices[0].message.content;
+        console.log('Original API response:', aiResponse);
+
+        res.json({ response: aiResponse });
+    } catch (error) {
+        console.error('Error communicating with OpenAI API:', error.message);
+        res.status(500).json({ error: 'An error occurred while processing your request.' });
+    }
+})
 
 // Start the server
 app.listen(PORT, () => {
