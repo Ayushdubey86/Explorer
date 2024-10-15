@@ -4,21 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <title>Trip Planner</title>
 </head>
 <body>
  
-    <div class="inline-container">
-        <div class="header-navigation" >
-            <h1 class="explorer">Explorer</h1>
-            <h1 style="margin-left: 620px;"><a href="/visa" class="header-visa">Visa</a></h1>
-            <h1 style="margin-left: 4%;"><a href="/about" class="header-about" target="_blank">About</a></h1>
-            <h1 style="margin-left: 4%;"><a href="/contact" class="header-contact"  target="_blank">Contact</a></h1>
-            <h1></h1>
-           
+        <div class="container-fluid">
+            <div class="row">
+                <h1 class="col-md-4 col-lg-4 offset-1 mt-3 explorer">TripPlanner</h1>
+                <p class="col-md-1 col-lg-1 mt-4 d-flex justify-content-center align-items-center"><a href="/visa" class="header-visa">Visa</a></p>
+                <p class="col-md-1 col-lg-1 mt-4 d-flex justify-content-center align-items-center"><a href="/about" class="header-about" target="_blank">About</a></p>
+                <p class="col-md-1 col-lg-1 mt-4 d-flex ms-2 justify-content-center align-items-center"><a href="/contact" class="header-contact"  target="_blank">Contact</a></p>
+                <button id="previousIti" class="col-md-2 col-lg-2 mt-4 mb-3 prev-iti d-none offset-1 ">Previous Itinerary</button>
+                <button class="col-md-1 col-lg-1 mt-4 mb-4 login-button offset-1 custom-btn" onclick="openLoginPopup()">Login</button>
+                <button class="col-md-1 col-lg-1 mt-4 mb-4 Register-button ms-4" onclick="openRegisterPopup()">Register</button>
+            </div>
         </div>
-        <button class="login-button" onclick="openLoginPopup()">Login</button>
-        <button class="Register-button" onclick="openRegisterPopup()">Register</button>
+
         <div id="background-video-container">
             <video id="background-video" autoplay muted></video>
             <div id="video-overlay">
@@ -26,74 +28,97 @@
             </div>
         </div>
 
-    <div id="app">
-        <h1>Plan Your Trip</h1>
-
-        <section id="basic-info">
-            <div class="info-container">
-                <div class="info-item" id="">
-                    <label for="location">Location</label>
-                    <input type="text" id="location" placeholder="Maybe Location you want to travel"> 
+        <div class="container-fluid">
+            <div class="row">
+                <h1 class="mx-auto text-center p-2 mt-4 planYourTrip">Plan    Your   Trip</h1>
+            </div>
+            <div class="row pb-3 ps-3 ms-5">
+                <div class="col-md-2 col-lg-2 offset-1   d-flex flex-column" id="">                
+                    <label for="location" class="pb-2 text-label">Destination</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <input type="text" id="location" placeholder="Destination" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" > 
+                        </div>
+                    </div>
                 </div>
-                <div class="info-item" id="resident-container">
-                    <label for="resident">Resident</label>
-                    <input type="text" id="resident" placeholder="Current Resident">
+                <div class="col-md-2 col-lg-2 d-flex flex-column" id="resident-container">
+                    <label for="resident" class="pb-2 text-label">Resident</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <input type="text" id="resident" placeholder="Current Resident"  class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  >
+                        </div>
+                    </div>
                 </div>
-                <div class="info-item" id="budget-container">
-                    <label for="expense-cap">Expense Cap</label>
-                    <input type="text" id="expense-cap" placeholder="Enter budget" />
+                            
+                <div class="col-md-3 col-lg-3 d-flex flex-column" id="budget-container">
+                    <label for="expense-cap" class="pb-2 text-label">Expense Cap</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control " id="expense-cap" placeholder="Enter budget" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                        <select class="col-4 text-center currency" id="currency" name="companion">
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="INR">INR</option>
+                            <option value="JPY">JPY</option>
+                        </select>
+                    </div>
                 </div>
-
-                <div class="info-item" id="currency-container">
-                    <label for="currency">Currency</label>
-                    <select id="currency" name="currency" style="margin-left: 10px;">
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                        <option value="INR">INR</option>
-                        <option value="JPY">JPY</option>
-                    </select>
-                </div>
-
-                <div class="info-item" id="duration-container">
-                    <label for="duration">Time Duration (days)</label>
-                    <input id="duration" placeholder="Enter number of days" style="margin-left: 10px;" />
+                <div class="col-md-2 col-lg-2 d-flex flex-column" id="duration-container">
+                    <label for="duration" class="pb-2 ms-2 text-label">Time Duration</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <input id="duration" placeholder="Days Expected" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-
-        <div class="accordion">
-            <div class="accordion-item">
-                <button class="accordion-header">More Optional Preference- Better outcome</button>
-                <div class="accordion-content">
-                    <div class="accordion-row">
-                        <label for="companion" class="label-dropdown">Travel Companion</label>
-                        <select id="companion" name="companion">
+        </div>
+    
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Button to toggle the visibility of the dropdowns -->
+                <button class="col-lg-8 col-md-8 offset-2 more-btn" type="button" data-bs-toggle="collapse" data-bs-target="#optional-preferences" aria-expanded="false" aria-controls="optional-preferences">
+                    More Optional Preference - Better outcome
+                </button>
+            </div>
+            <div class="">
+            <!-- Collapsible content for dropdowns -->
+            <div id="optional-preferences" class="collapse">
+                <div class="row">
+                    <div class="dropdown col-lg-2 col-md-2 offset-2 pt-2">
+                        <label for="companion" class="label-dropdown text-label">Travel Companion</label>
+                        <select class="more-dropdown w-100" type="button" id="companion" data-bs-toggle="dropdown" aria-expanded="false" name="companion" > Travel
                             <option value=""></option>
                             <option value="Solo">Solo</option>
                             <option value="Couple">Couple</option>
                             <option value="Family">Family</option>
                             <option value="Group">Group</option>
-                        </select>
-                        <label for="accommodation" class="label-dropdown">Accommodation</label>
-                        <select id="accommodation" name="accommodation">
+                        </select>                    
+                    </div>
+                    <div class="dropdown col-lg-1 col-md-1 offset-1 pt-2">
+                        <label for="accommodation" class="label-dropdown text-label">Accommodation</label>
+                        <select class="more-dropdown" type="button" id="accommodation" data-bs-toggle="dropdown" aria-expanded="false" name="companion" > Travel
                             <option value=""></option>
-                            <option value="Hotel">Hotel</option>
                             <option value="Hostel">Hostel</option>
-                            <option value="Vacation Rental">Vacation Rental</option>
+                            <option value="Hotel">Hotel</option>
                             <option value="Camping">Camping</option>
+                            <option value="Vacational Rental">Vacational Rental</option>
                         </select>
-                        <label for="style" class="label-dropdown">Travel Style</label>
-                        <select id="style" name="style">
+                    </div>
+                    <div class="dropdown col-lg-2 col-md-2 offset-2 pt-2">
+                        <label for="style" class="label-dropdown text-label">Travel Style</label><br>
+                        <select class="more-dropdown" type="button" id="style" data-bs-toggle="dropdown" aria-expanded="false" name="companion" > Travel
                             <option value=""></option>
                             <option value="Adventure">Adventure</option>
                             <option value="Relaxation">Relaxation</option>
                             <option value="Cultural">Cultural</option>
                         </select>
                     </div>
-                    <div class="accordion-row">
-                        <label for="interest"  class="label-dropdown">Interest Area</label>
-                        <select id="interest" name="interest">
+                </div>
+                <div class="row">
+                    <div class="dropdown col-lg-2 col-md-2 offset-3 pt-2 ps-2">
+                        <label for="interest" class="label-dropdown text-label">Interest Area</label>
+                        <select class="more-dropdown" type="button" id="interest" data-bs-toggle="dropdown" aria-expanded="false" name="companion" > Travel
                             <option value=""></option>
                             <option value="Historical Sites">Historical Sites</option>
                             <option value="Nature and Hiking">Nature and Hiking</option>
@@ -101,8 +126,10 @@
                             <option value="Art and Culture">Art and Culture</option>
                             <option value="Shopping">Shopping</option>
                         </select>
-                        <label for="transport"  class="label-dropdown">Transport Preference</label>
-                        <select id="transport" name="transport">
+                    </div>
+                    <div class="dropdown col-lg-3 col-md-3 offset-2 pt-2 pe-2">
+                        <label for="transport" class="label-dropdown text-label">Transport Preference</label>
+                        <select class="more-dropdown" type="button" id="transport" data-bs-toggle="dropdown" aria-expanded="false" name="companion" > Travel                           
                             <option value=""></option>
                             <option value="Car Rental">Car Rental</option>
                             <option value="Public Transport">Public Transport</option>
@@ -110,13 +137,17 @@
                         </select>
                     </div>
                 </div>
-            </div>        
+            </div>
+            </div>
         </div>
-
-        <button id="submit-button">Plan My Trip</button>
-
-    </div>
-    </div>
+ 
+        
+        <div class="container-fluid">
+            <div class="row col-lg-2 col-md-2 offset-9 p-3 mt-2">
+                <button id="submit-button" class="planBtn"> Plan My Trip</button>
+            </div>
+        </div>
+     
     <div id="loginPopup" class="login-popup">
         <div class="login-popup-content">
             <span class="close-popup" onclick="closeLoginPopup()">&times;</span>
@@ -127,7 +158,8 @@
 
             <button type="submit" id="submit-login">Submit</button>
         </div>
-    </div>
+    </div>  
+          
     <div id="RegisterPopup" class="Register-popup">
         <div class="register-popup-content">
             <div id="registerForm">
@@ -135,20 +167,41 @@
             <h2>Register</h2>
             <input type="text" placeholder="Email" id="emailReg" name="email" required>
             <input type="password" placeholder="Password" id="passwordReg" name="password" required>
-            <button type="button" id="registerButton" >Register</button>
-            </div>
+           
+            </div> <button type="button" id="registerButton" >Register</button>
             <div id="otpForm">
             <input type="text" id="otp" placeholder="Enter OTP" required />
             <button type="button" id="verifyOtpButton">Verify OTP</button>
             </div>
-            <div id="message"></div>
+            <div id="message" style="color: red;"></div>
         </div>
-    </div>
-    <div id="previousIti" class="prev-iti">
-       <button>Previous Itinerary</button>
-    </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    </div> 
+
+
+    <!-- <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="card" style="width: 18rem; margin-right: 10px;">
+                <div class="card-body">
+                    <p class="card-text">Reach Out or Whatsapp us on +91 9326352966</p>
+                </div>
+            </div>
+    
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <p class="card-text">Email us on myTrip@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+        <footer class="footer bg-dark text-white text-center py-3">
+            <p>&copy; 2024 MyTrip - Phone: +91 93263 52966</p>
+        </footer>
+   
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script  src="script.js"></script>
 </body>
 </html>
