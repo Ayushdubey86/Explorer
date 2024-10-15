@@ -1,20 +1,172 @@
+document.addEventListener('DOMContentLoaded', function () {
+    console.log("DOM fully loaded and parsed");
+
+    mailcheck();
+
+    checkLoginStatus(); // Check login status after DOM is ready
+    fetchEncryptReload().then(() => {
+        console.log("Fetch encryption key completed");
+    }).catch((err) => {
+        console.error("Error fetching encryption key:", err);
+    });
+    fetchEncryptTrip().then(() => {
+        console.log("Fetch encryption key completed for trip");
+    }).catch((err) => {
+        console.error("Error fetching encryption key for trip", err);
+    });
+});
+
+
+
+let encryptionKey = null; // Will hold the fetched key
+let encryptTrip = null;
+
+// Get email from localStorage and send it to the backend
+async function mailcheck() {
+    const email = localStorage.getItem('emailLog'); // Get email from localStorage
+
+    if (email) {
+        try {
+            const response = await fetch('/passOn', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }), // Send email in body
+            });
+
+            if (response.ok) {
+                console.log('Email sent to backend successfully');
+            } else {
+                console.error('Failed to pass email to backend');
+            }
+        } catch (error) {
+            console.log('Failed to get email:', error);
+        }
+    } else {
+        console.log('No email found in localStorage');
+    }
+}
+
+async function fetchEncryptTrip() {
+    try {
+        const response = await fetch('/trip', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+        encryptTrip = data.key;  // Ensure you access the 'key' field
+        console.log('Fetched Encryption Key:', encryptTrip);
+    } catch (error) {
+        console.error('Failed to fetch encryption key:', error);
+    }
+}
+
+// Function to fetch the encryption key from your server
+async function fetchEncryptReload() {
+    
+    try {
+        const response = await fetch('/refresh', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+        encryptionKey = data.key;  // Ensure you access the 'key' field
+        console.log('Fetched Encryption Key:', encryptionKey);
+    } catch (error) {
+        console.error('Failed to fetch encryption key:', error);
+    }
+}
+
+const videoSources = [
+  
+    'videos/lofoten cliff.mp4',
+    'videos/zambiaBridge.mp4',
+    'videos/maderia sea.mp4',
+    'videos/drone river.mp4',
+    'videos/venezia.mp4',  
+    'videos/cylceland.mp4',
+    'videos/zambiaBridge.mp4',
+    'videos/maderia sea.mp4'
+    //'images/shark swimy.mp4'
+];
+
+const overlayTexts = [
+    "The World is Waiting—Dive in! Your Adventure Starts Today, not Tomorrow",
+    "Take the Leap, Chase the Horizon, and write your story on Every Continent",
+    "Your Journey Starts the Moment you Decide. Break Free—Travel, Live, Explore",
+    "This is your Sign. The Time is Now. Pack your Bags and live the Adventure!",
+    "Don’t just Dream of Faraway Lands—Make Them your Reality. The Time is now!",
+    "Go Beyond Borders, Beyond Limits—Choose the Red Pill, and never Look Back",
+    "One Life. One Chance. Choose the Adventure of a Lifetime. Go Now",
+    "Leave the ordinary behind. The world is calling—answer it today"
+];
+
+let videoIndex = 0;
+const videoElement = document.getElementById('background-video');
+const overlayTextElement = document.querySelector('.overlay-text');
+
+function fadeOutVideo(videoElement, callback) {
+    videoElement.style.transition = 'opacity 1s ease-out';
+    videoElement.style.opacity = 0;
+    setTimeout(callback, 1000); // Wait for the fade-out transition to finish
+}
+
+function fadeInVideo(videoElement) {
+    videoElement.style.transition = 'opacity 1s ease-in';
+    videoElement.style.opacity = 1;
+}
+
+function loadNextVideo() {
+    fadeOutVideo(videoElement, () => {
+        videoElement.src = videoSources[videoIndex];
+        videoElement.play();
+        fadeInVideo(videoElement);
+
+        // Update the overlay text for the current video
+        overlayTextElement.textContent = overlayTexts[videoIndex];
+        overlayTextElement.style.display = overlayTexts[videoIndex] ? 'block' : 'none';
+
+        videoIndex = (videoIndex + 1) % videoSources.length;
+    });
+}
+
+// Load the first video
+loadNextVideo();
+
+// Event listener to load the next video when the current one ends
+videoElement.addEventListener('ended', loadNextVideo);
+
 // Function to check if the user has already searched
+
 function checkSearchLimit() {
-    // Check if the user is logged in
-    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-    if (isLoggedIn) {
+    // Check if the user is logged in using cookies instead of sessionStorage
+    const isLoggedIn = getCookie('isLoggedIn');
+    if (isLoggedIn === 'true') {
         return true; // Allow search if logged in
     }
 
-    const hasSearched = localStorage.getItem('hasSearched');
-    if (hasSearched) {
-        console.log('Please login/register to use more');
-        return false;
+    // Get encrypted 'hasSearched' from cookies instead of localStorage
+    const encryptedHasSearched = getCookie('hasSearched');
+    if (encryptedHasSearched) {
+        const hasSearched = decryptData(encryptedHasSearched);
+        if (hasSearched === 'true') {
+            showModal();
+            return false;
+        }
     }
 
-    localStorage.setItem('hasSearched', 'true'); // Mark as searched
+    // Encrypt and store the 'hasSearched' value in a cookie
+    const encryptedValue = encryptData('true');
+    setCookie('hasSearched', encryptedValue, 3); // Store encrypted value for 3 days
+
     return true;
 }
+
 
 document.getElementById('submit-button').addEventListener('click', async function () {
     if (!checkSearchLimit()) {
@@ -31,7 +183,7 @@ document.getElementById('submit-button').addEventListener('click', async functio
     localStorage.setItem('itineraryResponse', JSON.stringify({ status: 'loading' }));
 
     const travelto = document.getElementById('location').value || 'anywhere in the world';
-    const residentvar = document.getElementById('resident').value || 'anywhere in the world';
+    const residentvar = document.getElementById('resident').value || 'Assume India';
     const expenseCap = document.getElementById('expense-cap').value || '0';
     const currency = document.getElementById('currency').value || 'USD';
     const duration = document.getElementById('duration').value || 'not specified';
@@ -153,7 +305,7 @@ document.getElementById('submit-button').addEventListener('click', async functio
     
     
         // Fetch itinerary without storing data if user is not logged in
-        const response = await fetch('http://localhost:3001/openai', {
+        const response = await fetch('/openai', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -175,7 +327,7 @@ document.getElementById('submit-button').addEventListener('click', async functio
         console.log(isLoggedIn);
         console.log(email);
 
-        if (isLoggedIn && email) {
+        if (email) {
             await fetch('/storeTripData', {
                 method: 'POST',
                 headers: {
@@ -206,10 +358,10 @@ document.getElementById('submit-button').addEventListener('click', async functio
 });
 
 
-document.querySelector('.inline-container h1').addEventListener('click', function() {
-    const optionalInfo = document.getElementById('optional-info');
-    optionalInfo.classList.toggle('active');
-});
+// document.querySelector('.inline-container h1').addEventListener('click', function() {
+//     const optionalInfo = document.getElementById('optional-info');
+//     optionalInfo.classList.toggle('active');
+// });
 
 document.addEventListener('DOMContentLoaded', () => {
     const headers = document.querySelectorAll('.accordion-header');
@@ -228,6 +380,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+
 let isPopupOpen = false;
 
 function openLoginPopup() {
@@ -236,8 +390,9 @@ function openLoginPopup() {
 }
 
 function closeLoginPopup() {
-    document.getElementById("loginPopup").style.display = "none"; // Corrected ID
+    document.getElementById("loginPopup").style.display = "none"; 
     isPopupOpen = false;
+  
 }
 
 window.onclick = function(event) {
@@ -269,57 +424,47 @@ window.onclick = function(event) {
     }
  }
 
-const videoSources = [
-    
-    'images/lofoten cliff.mp4',
-    //'images/shark swimy.mp4'
-];
-
-const overlayTexts = [
-    "Take a step beyond with us",
-    "Join Us. Live with us."
-];
-
-let videoIndex = 0;
-const videoElement = document.getElementById('background-video');
-const overlayTextElement = document.querySelector('.overlay-text');
-
-function fadeOutVideo(videoElement, callback) {
-    videoElement.style.transition = 'opacity 1s ease-out';
-    videoElement.style.opacity = 0;
-    setTimeout(callback, 1000); // Wait for the fade-out transition to finish
-}
-
-function fadeInVideo(videoElement) {
-    videoElement.style.transition = 'opacity 1s ease-in';
-    videoElement.style.opacity = 1;
-}
-
-function loadNextVideo() {
-    fadeOutVideo(videoElement, () => {
-        videoElement.src = videoSources[videoIndex];
-        videoElement.play();
-        fadeInVideo(videoElement);
-
-        // Update the overlay text for the current video
-        overlayTextElement.textContent = overlayTexts[videoIndex];
-        overlayTextElement.style.display = overlayTexts[videoIndex] ? 'block' : 'none';
-
-        videoIndex = (videoIndex + 1) % videoSources.length;
-    });
-}
-
-// Load the first video
-loadNextVideo();
-
-// Event listener to load the next video when the current one ends
-videoElement.addEventListener('ended', loadNextVideo);
 
 
 // script.js
 document.getElementById('registerButton').addEventListener('click', () => {
     const email = document.getElementById('emailReg').value;
     const password = document.getElementById('passwordReg').value;
+    const messageElement = document.getElementById('message');
+    
+    // Clear any previous messages
+    messageElement.innerText = '';
+
+    // Email validation function
+    function isValidEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+    }
+
+    // Password validation (minimum 6 characters)
+    function isStrongPassword(password) {
+        return password.length >= 6;
+    }
+
+    // Validate email
+    if (!isValidEmail(email)) {
+        messageElement.innerText = 'Please enter a valid email address';
+        return; // Stop further execution if email is invalid
+    }
+
+    // Validate password strength
+    if (!isStrongPassword(password)) {
+        messageElement.innerText = 'Password must be at least 6 characters long';
+        return; // Stop further execution if password is weak
+    }
+    
+
+    // const secretKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';
+    
+    // // Encrypt email and password
+    // const encryptedEmail = CryptoJS.AES.encrypt(email, secretKey).toString();
+    // const encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
+
 
     fetch('/register', {
         method: 'POST',
@@ -335,74 +480,47 @@ document.getElementById('registerButton').addEventListener('click', () => {
             document.getElementById('otpForm').style.display = 'block';
         }
         document.getElementById('message').innerText = data.message;
+        setCookie('isLoggedIn', 'true', 3);
     })
     .catch(error => {
         console.error('Error:', error);
     });
 });
 
-// Login
-// document.getElementById('submit-login').addEventListener('click', () => {
-//     const email = document.getElementById('emailLog').value;
-//     console.log('email in login ', email);
-    
-//     const password = document.getElementById('password').value;
-
-//     fetch('/login', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ email, password }),
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.message === 'Login successful') {
-//             console.log('Login successful');
-//             closeLoginPopup();
-//             document.querySelector('.login-button').style.display = 'none'; // Hide the login btn
-//             document.querySelector('.Register-button').style.display = 'none'; // Hide the Register button
-
-//             // Set session storage to allow searches
-//             sessionStorage.setItem('isLoggedIn', 'true');
-//             localStorage.setItem('emailLog', email);
-//             // Optionally redirect or perform another action
-//         } else {
-//             console.log('Wrong email/password');
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//     });
-// });
-
 document.getElementById('verifyOtpButton').addEventListener('click', () => {
     const email = document.getElementById('emailReg').value;
     const otp = document.getElementById('otp').value;
     const password = document.getElementById('passwordReg').value;
-    console.log(password);
     
+    const secretKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';
 
+    // Encrypt email, password, and otp
+    const encryptedEmail = CryptoJS.AES.encrypt(email, secretKey).toString();
+    const encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
+    const encryptedOtp = CryptoJS.AES.encrypt(otp, secretKey).toString();
+    
+    // Send encrypted data to server
     fetch('/verify-otp', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, otp,password }),
+        body: JSON.stringify({ encryptedEmail,encryptedOtp,encryptedPassword }),
     })
     .then(response => response.json())
     .then(data => {
         document.getElementById('message').innerText = data.message;
         if (data.message === 'OTP verified and user registered successfully') {
             closeRegPopup(); // Close the registration popup
-            document.querySelector('.Register-button').style.display = 'none'; // Hide the Register button
-            document.querySelector('.login-button').style.display = 'none'; // Hide the login btn
-       }
+            document.querySelector(".login-button").classList.add("d-none");         
+            document.querySelector(".Register-button").classList.add("d-none");
+        }
     })
     .catch(error => {
         console.error('Error:', error);
     });
 });
+
 
 function hasGreatBudget(expenseCap, currency) {
     const budgetInUSD = (currency === 'USD') ? expenseCap : convertCurrencyToUSD(expenseCap, currency);
@@ -419,19 +537,12 @@ function convertCurrencyToUSD(amount, currency) {
     };
     return amount * (conversionRates[currency] || 1);
 }
-
-// function setCookie(name, value, days) {
-//     const date = new Date();
-//     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Set the cookie expiration in days
-//     const expires = "expires=" + date.toUTCString();
-//     document.cookie = name + "=" + value + ";" + expires + ";path=/"; // Set the cookie for the entire site
-// }
-
-
 // Login
 document.getElementById('submit-login').addEventListener('click', () => {
     const email = document.getElementById('emailLog').value;
     const password = document.getElementById('password').value;
+
+
 
     fetch('/login', {
         method: 'POST',
@@ -447,11 +558,15 @@ document.getElementById('submit-login').addEventListener('click', () => {
           
 
             closeLoginPopup();
-            document.querySelector('.login-button').style.display = 'none'; // Hide the login button
-            document.querySelector('.Register-button').style.display = 'none'; // Hide the Register button
+      
+            document.getElementById("previousIti").classList.remove("d-none"); // Show Previous Itinerary button
+            document.querySelector(".login-button").classList.add("d-none");         
+            document.querySelector(".Register-button").classList.add("d-none"); // Set session storage to allow searches
 
-            // Set session storage to allow searches
-            sessionStorage.setItem('isLoggedIn', 'true');
+       
+            setCookie('isLoggedIn', 'true', 3);
+            //console.log();
+            //const encryptedEmail = CryptoJS.AES.encrypt(email, emailSecretKey).toString();
             localStorage.setItem('emailLog', email);
 
             // Check for previous itinerary after successful login
@@ -488,8 +603,7 @@ function checkForPreviousItinerary(email) {
     });
 }
 
-
-document.querySelector('.prev-iti button').addEventListener('click', () => {
+document.querySelector('.prev-iti').addEventListener('click', () => {
     const newWindow2 = window.open('/histprompt', '_blank'); 
 
     if (!newWindow2) {
@@ -498,3 +612,174 @@ document.querySelector('.prev-iti button').addEventListener('click', () => {
     }
 })
 
+function setCookie(name, value, days) {
+    const d = new Date();
+    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + d.toUTCString();
+    console.log("expire time ", expires);
+    
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+function getCookie(name) {
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    name = name + "=";
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+window.onload = function() {
+    const isLoggedIn = getCookie('isLoggedIn'); // Get the 'isLoggedIn' cookie
+    const emailLog = localStorage.getItem('emailLog'); // Check local storage for the logged-in email
+
+    if (isLoggedIn === 'true') {
+        // If the user is logged in, hide the login and register buttons
+        document.querySelector('.login-button').style.display = 'none';
+        document.querySelector('.Register-button').style.display = 'none';
+
+        console.log(`Welcome back, ${emailLog}`);
+        // Optionally, show the user's previous itinerary or logged-in UI
+        checkForPreviousItinerary(emailLog);
+    }
+};
+
+//     const modal = document.getElementById('searchLimitModal');
+    
+
+//     // Close the modal when the 'x' button is clicked
+//     const closeModal = document.getElementById('closeModal');
+    
+
+//     // Close modal if the user clicks outside the modal content
+//     window.onclick = function (event) {
+//         if (event.target === modal) {
+//             modal.style.display = 'none';
+//         }
+//     }
+
+//     // Show login popup when 'Login' button is clicked
+//     const loginBtn = document.getElementById('loginBtn');
+//     loginBtn.onclick = function () {
+//         modal.style.display = 'none'; // Hide the search limit modal
+//         openLoginPopup(); // Show the login popup
+//     }
+// }
+
+// Play next video when the current one ends
+// video1.addEventListener('ended', function() {
+//     video2.play();
+// });
+
+// video2.addEventListener('ended', function() {
+//     video3.play();
+// });
+
+// Function to encrypt data
+function encryptData(data) {
+    return CryptoJS.AES.encrypt(data, encryptionKey).toString();
+}
+
+// Function to decrypt data
+function decryptData(data) {
+    try {
+        const bytes = CryptoJS.AES.decrypt(data, encryptionKey);
+        return bytes.toString(CryptoJS.enc.Utf8);
+    } catch (e) {
+        return null; // If decryption fails
+    }
+}
+
+function checkLoginStatus() {
+    console.log("Checking login status...");
+    const isLoggedIn = getCookie('isLoggedIn');
+    if (isLoggedIn === 'true') {
+        console.log("User is logged in, showing button.");
+        document.querySelector('.prev-iti').classList.remove('d-none');
+    } else {
+        console.log("User is not logged in.");
+    }
+}
+
+
+function showModal() {
+    // Create the modal background (overlay)
+    const modalOverlay = document.createElement('div');
+    modalOverlay.style.position = 'fixed';
+    modalOverlay.style.top = '0';
+    modalOverlay.style.left = '0';
+    modalOverlay.style.width = '100%';
+    modalOverlay.style.height = '100%';
+    modalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    modalOverlay.style.display = 'flex';
+    modalOverlay.style.justifyContent = 'center';
+    modalOverlay.style.alignItems = 'center';
+    modalOverlay.style.zIndex = '1000';
+
+    // Create the modal box
+    const modalBox = document.createElement('div');
+    modalBox.style.width = '400px';
+    modalBox.style.padding = '20px';
+    modalBox.style.backgroundColor = '#fff';
+    modalBox.style.borderRadius = '8px';
+    modalBox.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+    modalBox.style.textAlign = 'center';
+
+    // Add the modal message
+    const modalMessage = document.createElement('p');
+    modalMessage.textContent = 'Please register/login to search more';
+    modalMessage.style.marginBottom = '20px';
+    modalMessage.style.fontSize = '18px';
+    modalMessage.style.color = '#333';
+    modalBox.appendChild(modalMessage);
+
+    // Add the "Login" button
+    const loginButton = document.createElement('button');
+    loginButton.textContent = 'Register';
+    loginButton.style.padding = '10px 20px';
+    loginButton.style.backgroundColor = '#007bff';
+    loginButton.style.color = '#fff';
+    loginButton.style.border = 'none';
+    loginButton.style.borderRadius = '5px';
+    loginButton.style.cursor = 'pointer';
+    loginButton.style.marginRight = '10px';
+
+    // Redirect to login page when "Login" button is clicked
+    loginButton.addEventListener('click', function() {
+        document.body.removeChild(modalOverlay);
+        openRegisterPopup(); // Call the openLoginPopup function
+    });
+
+    modalBox.appendChild(loginButton);
+
+    // Add the "Close" button
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Close';
+    closeButton.style.padding = '10px 20px';
+    closeButton.style.backgroundColor = '#6c757d';
+    closeButton.style.color = '#fff';
+    closeButton.style.border = 'none';
+    closeButton.style.borderRadius = '5px';
+    closeButton.style.cursor = 'pointer';
+
+    // Close the modal when "Close" button is clicked
+    closeButton.addEventListener('click', function() {
+        document.body.removeChild(modalOverlay);
+    });
+
+    modalBox.appendChild(closeButton);
+
+    // Add the modal box to the modal overlay
+    modalOverlay.appendChild(modalBox);
+
+    // Add the modal overlay to the document body
+    document.body.appendChild(modalOverlay);
+}
