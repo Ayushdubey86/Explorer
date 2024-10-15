@@ -1,0 +1,141 @@
+
+
+.header-visa,
+.header-about,
+.header-contact {
+  font-family: "DM Sans", sans-serif;
+  font-size: 1.225rem;
+  font-weight: 500;
+  color: black;
+  text-decoration: none; 
+  cursor: pointer;
+}
+
+/* Hover effects */
+.header-visa:hover,
+.header-about:hover,
+.header-contact:hover {
+  color: black;  /* Ensure the text color stays black on hover */
+}
+
+/* Add similar effects for About and Contact if needed */
+.header-visa::after ,
+.header-about::after,
+.header-contact::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: black;  /* Set underline color */
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-in-out;
+}
+
+.header-visa:hover::after ,
+.header-about:hover::after,
+.header-contact:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.img{
+  opacity: 0.6;
+  height: 92vh;
+  object-fit: cover;
+}
+
+/* Overlay content remains unchanged */
+.content-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  /* justify-content: space-between;   */
+
+}
+
+/* Form styling */
+.form-group {
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 500px;
+}
+
+/* Input fields */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group textarea {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Focus effects on inputs */
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.4);
+}
+
+/* Label styling */
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+  color: #333;
+}
+
+/* Button styling */
+.form-group .btn-primary {
+  background-color: #3498db;
+  color: white;
+  font-size: 18px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  height: 60%;
+
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+}
+
+/* Hover effect on button */
+.form-group .btn-primary:hover {
+  background-color: #2980b9;
+  box-shadow: 0 5px 15px rgba(41, 128, 185, 0.4);
+}
+
+/* Submit button press effect */
+.form-group .btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 8px rgba(41, 128, 185, 0.4);
+}
+
+/* Smooth form scale-up on hover */
+.form-group:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Textarea customization */
+.form-group textarea {
+  resize: none;
+  min-height: 60px;
+}
+
