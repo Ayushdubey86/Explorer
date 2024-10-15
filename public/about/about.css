@@ -1,0 +1,161 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+
+
+
+.img{
+    opacity: 0.5;
+}
+
+.horiz{
+    display: flex;
+}
+
+/* Image overlay and styling */
+.img-overlay {
+    width: 100%;
+    height: auto;
+    opacity: 0.7; /* Apply the opacity to darken the image */
+}
+
+.position-relative {
+    position: relative;
+}
+
+.content-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center; /* Vertically center the content */
+    justify-content: center; /* Horizontally center the content */
+    background-color: rgba(0, 0, 0, 0.5); /* Add a dark overlay to the image */
+  }
+
+.heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.text-light {
+    color: white;
+}
+
+.list-group-item {
+    border: none; /* Remove border from list items */
+}
+
+.bg-transparent {
+    background-color: transparent !important; /* Make the list background transparent */
+}
+
+@media (max-width: 768px) {
+    .content-overlay {
+        margin-top: 50px;
+        padding: 10px;
+    }
+
+    .heading {
+        font-size: 2rem;
+    }
+    .row{
+        margin-top: 70%;
+    }
+}
+
+
+.home{
+    font-family: "DM Sans", sans-serif;
+    font-size: 1.225rem;
+    font-weight: 500;
+    color: black;
+    text-decoration: none;
+}
+
+.about-us,.contact{
+    font-family: "DM Sans", sans-serif;
+    font-size: 1.225rem;
+    font-weight: 500;
+    color: black;
+    text-decoration: none;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ .about-us, .contact {
+    margin: 0 10px; /* Adds space between the elements */
+    text-decoration: none; /* Removes underline from the links */
+}
+
+.home{
+    margin: 0 10px; /* Adds space between the elements */
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.about-us {
+    cursor: pointer; /* Adds pointer cursor to the 'About Us' */
+}
+
+.about-us::after,
+.contact:hover::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: black;  /* Set underline color */
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-in-out;
+}
+
+.about-us:hover::after,
+.contact:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.header-visa,
+.header-about,
+.header-contact {
+  font-family: "DM Sans", sans-serif;
+  font-size: 1.225rem;
+  font-weight: 500;
+  color: black;
+  text-decoration: none; 
+  cursor: pointer;
+}
+
+/* Hover effects */
+.header-visa:hover,
+.header-about:hover,
+.header-contact:hover {
+  color: black;  /* Ensure the text color stays black on hover */
+}
+
+/* Add similar effects for About and Contact if needed */
+.header-visa::after ,
+.header-about::after,
+.header-contact::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: black;  /* Set underline color */
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-in-out;
+}
+
+.header-visa:hover::after ,
+.header-about:hover::after,
+.header-contact:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
