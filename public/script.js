@@ -297,20 +297,21 @@ document.getElementById('submit-button').addEventListener('click', async functio
 
     // Generate the prompt text
     const prompt = createBasePrompt();
-    const secretKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';  // Make sure to use a secure key that is not exposed
+    const secretKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.=1-043248029834279562945.,/skxcknlcwoehnafc';  // Make sure to use a secure key that is not exposed
 
     try {
 
-        const encryptedPrompt = CryptoJS.AES.encrypt(JSON.stringify(prompt), secretKey).toString();
+        // const encryptedPrompt = CryptoJS.AES.encrypt(JSON.stringify(prompt), secretKey).toString();
     
-    
+        const { encryptedPrompt, iv } = await encryptPrompt(prompt, secretKey);
+
         // Fetch itinerary without storing data if user is not logged in
         const response = await fetch('/openai', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ prompt: encryptedPrompt }) // Use the prompt generated from createBasePrompt
+            body: JSON.stringify({ prompt: encryptedPrompt, iv: iv }) // Use the prompt generated from createBasePrompt
         });
 
         const data = await response.json();
@@ -782,4 +783,50 @@ function showModal() {
 
     // Add the modal overlay to the document body
     document.body.appendChild(modalOverlay);
+}
+
+async function encryptPrompt(prompt, secretKey) {
+    const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Generate random 12-byte IV (Initialization Vector)
+    const key = await generateKeyFromSecret(secretKey); // Generate AES-GCM key
+
+    const encodedPrompt = stringToArrayBuffer(JSON.stringify(prompt)); // Convert prompt to ArrayBuffer
+
+    const encryptedData = await window.crypto.subtle.encrypt(
+        {
+            name: 'AES-GCM',
+            iv: iv
+        },
+        key,
+        encodedPrompt
+    );
+
+    return {
+        encryptedPrompt: arrayBufferToBase64(encryptedData),
+        iv: arrayBufferToBase64(iv)
+    };
+}
+
+function stringToArrayBuffer(str) {
+    return new TextEncoder().encode(str);
+}
+
+function arrayBufferToBase64(buffer) {
+    return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
+
+async function hashSecretKey(secretKey) {
+    const keyMaterial = stringToArrayBuffer(secretKey); 
+    return await window.crypto.subtle.digest('SHA-256', keyMaterial); 
+}
+
+// Function to generate an AES-GCM key from a hashed secret
+async function generateKeyFromSecret(secretKey) {
+    const hashedKey = await hashSecretKey(secretKey); // Hash the secret key
+    return await window.crypto.subtle.importKey(
+        'raw', // Use raw key material
+        hashedKey, // Use the hashed key
+        { name: 'AES-GCM' }, // Algorithm to use
+        false, // Key should not be extractable
+        ['encrypt'] // Only allow encryption
+    );
 }
