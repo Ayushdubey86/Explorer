@@ -7,6 +7,10 @@ const nodemailer = require('nodemailer');
 const { log } = require('console');
 const maxmind = require('maxmind');
 const session = require('express-session');
+const crypto = require('crypto');  // Node.js built-in module
+
+// const crypto = require('crypto'); // Make sure to import crypto
+
 
 const app = express();
 const PORT = 3001;
@@ -96,29 +100,68 @@ app.get('/visa', (req, res) => {
     res.sendFile(path.join(__dirname,'visa', 'visa.html'));
 });
 
+// const crypto = require('crypto'); // Make sure to import crypto
+// const axios = require('axios'); // Make sure axios is imported
+
 app.post('/openai', async (req, res) => {
-    const prompt = req.body.prompt;
-   
-    console.log(prompt);
+    const { prompt, iv } = req.body;
 
-    console.log("test openAi");
+    console.log('Request received'); // Log when the request is received
+    console.log('Prompt (encrypted):', prompt);
+    console.log('IV (encrypted):', iv);
+
+    const secretKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.=1-043248029834279562945.,/skxcknlcwoehnafc'; 
     
-    const secKey='fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';
-    console.log('chk');
+    // Function to decrypt the encrypted prompt
+    function decryptPrompt(encryptedPrompt, iv, secretKey) {
+        console.log('Decrypting prompt...');
+        
+        const encryptedData = Buffer.from(encryptedPrompt, 'base64');
+        const ivBuffer = Buffer.from(iv, 'base64');
+        const keyBuffer = crypto.createHash('sha256').update(secretKey).digest();
     
-    const bytes = CryptoJS.AES.decrypt(prompt, secKey);
-    const decryptedPrompt = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        console.log('Key Buffer:', keyBuffer);
+        console.log('IV Buffer:', ivBuffer);
+    
+        // Separate the encrypted data and the authentication tag (last 16 bytes for AES-GCM)
+        const authTagLength = 16;
+        const authTag = encryptedData.slice(encryptedData.length - authTagLength); // Get the last 16 bytes as the auth tag
+        const ciphertext = encryptedData.slice(0, encryptedData.length - authTagLength); // Get the rest as ciphertext
+    
+        const decipher = crypto.createDecipheriv('aes-256-gcm', keyBuffer, ivBuffer);
+        decipher.setAuthTag(authTag); // Set the auth tag for AES-GCM mode
+    
+        let decrypted;
+        try {
+            decrypted = decipher.update(ciphertext, null, 'utf8');
+            decrypted += decipher.final('utf8');
+        } catch (error) {
+            console.error('Error during decryption:', error.message);
+            throw error;
+        }
+    
+        console.log('Decrypted Prompt:', decrypted);
+        return decrypted;
+    }
 
-    console.log('Decrypted Prompt:', decryptedPrompt);
-
+    // Decrypt the prompt
+    let decryptedPrompt;
+    try {
+        decryptedPrompt = decryptPrompt(prompt, iv, secretKey); // Use secretKey instead of secKey
+    } catch (error) {
+        console.error('Decryption failed:', error.message);
+        return res.status(500).json({ error: 'Decryption failed.' });
+    }
 
     if (!process.env.OPENAI_API_KEY) {
+        console.error('OpenAI API key is missing.'); // Log if API key is missing
         return res.status(500).json({ error: 'OpenAI API key is missing.' });
     }
 
-    console.log('Received prompt:', prompt);
+    console.log('Received prompt after decryption:', decryptedPrompt); // Log the decrypted prompt after decryption
 
     try {
+        console.log('Sending request to OpenAI API...'); // Log when making the API request
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: decryptedPrompt }],
@@ -134,20 +177,19 @@ app.post('/openai', async (req, res) => {
             }
         });
 
-        let aiResponse = response.data.choices[0].message.content;
-        // console.log('');
+        console.log('Response from OpenAI API:', response.data); // Log the raw response from OpenAI API
 
-        console.log('Original API response:', aiResponse);
+        let aiResponse = response.data.choices[0].message.content;
+
+        console.log('AI Response:', aiResponse); // Log the AI's actual response content
 
         res.json({ response: aiResponse });
     } catch (error) {
-        console.error('Error communicating with OpenAI API:', error.message);
+        console.error('Error communicating with OpenAI API:', error.message); // Log any errors during the API call
         res.status(500).json({ error: 'An error occurred while processing your request.' });
     }
-
-   // res.json({ response: 'test' });
-    
 });
+
 
 app.post('/verify-otp', async (req, res) => {
     const { email, otp, password } = req.body;
