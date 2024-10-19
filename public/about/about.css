@@ -13,25 +13,75 @@
 /* Image overlay and styling */
 .img-overlay {
     width: 100%;
-    height: auto;
     opacity: 0.7; /* Apply the opacity to darken the image */
+}
+
+.rounded-image {
+    border-radius: 10px;
+    object-fit: cover; /* Ensures images retain aspect ratio and fit the container */
+}
+
+.img-fluid2{
+    margin-top: 40px;
+    height: 86%;
+    width: 94%;
+    margin-left: 4%;
 }
 
 .position-relative {
     position: relative;
 }
 
-.content-overlay {
+/* .content-overlay {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 50%;
     height: 100%;
     display: flex;
-    align-items: center; /* Vertically center the content */
-    justify-content: center; /* Horizontally center the content */
-    background-color: rgba(0, 0, 0, 0.5); /* Add a dark overlay to the image */
-  }
+    align-items: center; 
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  } */
+
+
+  .content-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1); /* Darker overlay for better readability */
+    border-radius: 10px;
+    color: #fff; /* White text for better contrast */
+    padding: 20px; /* Adds spacing inside the content box */
+    text-align: center; /* Centers the text */
+}
+
+.content-overlay2 {
+    position: absolute;
+    top: 0;
+    right: 0; /* Aligns the overlay to the right */
+    left: auto; /* Ensures left is not affecting positioning */
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3); /* Darker overlay for better readability */
+    border-radius: 10px;
+    color: #fff; /* White text for better contrast */
+    padding: 20px; /* Adds spacing inside the content box */
+    text-align: center; /* Centers the text */
+}
+
+
 
 .heading {
     font-size: 2.5rem;
@@ -157,5 +207,32 @@
 .header-contact:hover::after {
   transform: scaleX(1);
   transform-origin: bottom left;
+}
+
+.overlay-heading {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.overlay-description {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    padding: 0 10px;
+}
+
+.highlight-list {
+    list-style-type: none; /* Removes default bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+.highlight-list li {
+    margin: 10px 0; /* Adds space between each list item */
+    font-size: 1.1rem;
+    line-height: 1.6;
+    padding-left: 1.2em;
+    position: relative;
+    color: #fff;
 }
 
