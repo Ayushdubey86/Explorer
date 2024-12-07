@@ -24,7 +24,7 @@ async function mailcheck() {
             });
 
             if (response.ok) {
-               
+                console.log('Email sent to backend successfully');
             } else {
                 console.error('Failed to pass email to backend');
             }
