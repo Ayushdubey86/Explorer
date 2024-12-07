@@ -140,3 +140,40 @@
   min-height: 60px;
 }
 
+@media (max-width: 576px) {
+  .wrapper {
+      display: none;
+  }
+}
+
+@media (min-width: 576px){
+  .mobile{
+    display: none;
+   }
+}
+
+.explorer2 {
+  font-size: 1.25rem; /* Optimized font size for mobile */
+  text-align: center; /* Center the heading text */
+  margin-bottom: 0.5rem; /* Add space below the heading */
+}
+
+.links-container {
+  display: flex;
+  justify-content: space-between; /* Place links on the same line */
+  width: 100%; /* Use full width for better spacing */
+  max-width: 300px; /* Restrict width for a mobile-friendly design */
+  gap: 1rem; /* Space between links */
+}
+
+.links-container p {
+  margin: 0; /* Reset default margins */
+  flex: 1; /* Ensure links take up equal space */
+  text-align: center; /* Center-align text within each <p> */
+}
+
+.links-container a {
+  text-decoration: none; /* Remove underline for cleaner design */
+  color: #000; /* Mobile-friendly link color */
+  font-size: 1rem; /* Maintain readable font size */
+}
