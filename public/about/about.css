@@ -32,20 +32,6 @@
     position: relative;
 }
 
-/* .content-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center; 
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-  } */
-
-
   .content-overlay {
     position: absolute;
     top: 0;
@@ -74,7 +60,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.3); /* Darker overlay for better readability */
+    background-color: rgba(0, 0, 0, 0.1); /* Darker overlay for better readability */
     border-radius: 10px;
     color: #fff; /* White text for better contrast */
     padding: 20px; /* Adds spacing inside the content box */
@@ -236,3 +222,116 @@
     color: #fff;
 }
 
+@media (max-width: 576px) {
+    .wrappere {
+        display: none;
+    }
+  }
+
+@media (min-width: 576px){
+  .mobile{
+    display: none;
+   }
+}
+
+.chk {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center-align items */
+    padding: 1rem; /* Add padding for a clean look */
+}
+
+.explorer2 {
+    font-size: 1.25rem; /* Optimized font size for mobile */
+    text-align: center; /* Center the heading text */
+    margin-bottom: 0.5rem; /* Add space below the heading */
+}
+
+.links-container {
+    display: flex;
+    justify-content: space-between; /* Place links on the same line */
+    width: 100%; /* Use full width for better spacing */
+    max-width: 300px; /* Restrict width for a mobile-friendly design */
+    gap: 1rem; /* Space between links */
+}
+
+.links-container p {
+    margin: 0; /* Reset default margins */
+    flex: 1; /* Ensure links take up equal space */
+    text-align: center; /* Center-align text within each <p> */
+}
+
+.links-container a {
+    text-decoration: none; /* Remove underline for cleaner design */
+    color: #000; /* Mobile-friendly link color */
+    font-size: 1rem; /* Maintain readable font size */
+}
+
+.overlay-description3{
+    font-size: 1.1rem;
+    line-height: 1.5;
+    padding: 0 10px;
+}
+
+.overlay-heading3 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 1px;
+}
+
+.content-overlay3{
+    position: absolute;
+    top: 45px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1); /* Darker overlay for better readability */
+    border-radius: 10px;
+    color: #fff; /* White text for better contrast */
+    padding: 20px; /* Adds spacing inside the content box */
+    text-align: center; /* Centers the text */
+}
+
+.img-fluid3{
+    margin-top: 11px;
+    height: 348px;
+}
+
+.cgg{
+    height: auto;
+}
+
+.overlay-description4{
+    margin-bottom: -10px;
+}
+
+.content-overlay4{
+    position: absolute;
+    top: 398px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1); /* Darker overlay for better readability */
+    border-radius: 10px;
+    color: #fff; /* White text for better contrast */
+    padding: 20px; /* Adds spacing inside the content box */
+    text-align: center; /* Centers the text */
+}
+
+.img-fluid4{
+    margin-top: 5px;
+    height: 521px;
+}
+
+.highlight-list2 li {
+    margin: 10px 0; /* Adds space between each list item */
+    /* font-size: 1.1rem;
+    line-height: 1.6; */
+    padding-left: 1.2em;
+    position: relative;
+    color: #fff;
+}
