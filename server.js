@@ -88,8 +88,6 @@ app.get('/visa', (req, res) => {
 
 app.post('/openai', async (req, res) => {
     const encryptedPrompt = req.body.prompt;
-
-    debug('Request received:', encryptedPrompt);    
     let decryptedPrompt;
     try {
         decryptedPrompt = customDecrypt(encryptedPrompt);
