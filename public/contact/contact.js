@@ -32,7 +32,6 @@ document.getElementById('submit').addEventListener('click', async function () {
         if (res.ok) {
             const data = await res.json();
             alert('Email sent successfully');
-            console.log('Response:', data);
         } else {
             console.error('Server error:', res.statusText);
             alert('Failed to send the email.');
