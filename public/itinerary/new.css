@@ -1,168 +1,71 @@
-   /* body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    max-width: 800px;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    width: 100%;
-    max-width: 600px;
-    height: auto;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-sizing: border-box;
-    scrollbar-width: thin;
-    scrollbar-color: #888 #f4f4f4; 
-}
-
-.card::-webkit-scrollbar {
-    width: 4px; 
-}
-
-.card::-webkit-scrollbar-track {
-    background: #f4f4f4; 
-}
-
-.card::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 10px; 
-    border: 1px solid #f4f4f4; 
-}
-
-
-
-.card pre {
-    white-space: pre-wrap; 
-    word-wrap: break-word;
-    margin: 0;
-    font-family: cursive;
-    font-size: 1rem;
-    color: #333;
-}
-
-.card h2 {
-    margin-top: 0;
-    color: #333;
-    font-size: 1.5rem;
-}
-
-.card p {
-    color: #666;
-    line-height: 1.5;
-}
-
-.loader {
-    text-align: center;
-    font-weight: bold;
-    font-family: sans-serif;
-    font-size: 1.2rem;
-    padding: 10px 0;
-    background: linear-gradient(currentColor 0 0) 0 100%/0% 3px no-repeat;
-    animation: l2 2s linear infinite;
-}
-
-.loader:before {
-    content: "Crafting your adventure... please hold tight!";
-}
-
-@keyframes l2 {
-    to {
-        background-size: 100% 3px;
-    }
-} */
-
-
-
-
-
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 20px;
 }
 
 .container {
-    background-color: #222;
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+  background-color: white;
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(255, 252, 252, 0.897);
+  border-radius: 8px;
 }
 
 h1 {
-    text-align: center;
-    color: #333;
+  text-align: center;
+  color: #333;
 }
 
 #itinerary-content {
-    margin-top: 20px;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #555;
-    white-space: pre-wrap; /* This preserves the line breaks in the response */
+  margin-top: 20px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #555;
+  white-space: pre-wrap; /* This preserves the line breaks in the response */
 }
 
 .card.is-loading {
-    .header,
-    h2,
-    p,align-p {
-      background: #222;
-      background: linear-gradient(90deg, #313131 8%, #2a2a2a 18%, #333 33%);
-      border-radius: 5px;
-      background-size: 200% 100%;
-      animation: 1.5s shine linear infinite;
-    }
-  
-    .header {
-      height: 96px;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-  
-    h2 {
-      height: 30px;
-    }
-  
-    p {
-      height: 15px;
-    }
+  .header,
+  h2,
+  p,align-p {
+    background: #222;
+    background: linear-gradient(90deg, #fefefe 8%, #f0eded 18%, #f4efef 33%);
+    border-radius: 5px;
+    background-size: 200% 100%;
+    animation: 1.8s shine linear infinite;
   }
 
-  @keyframes shine {
-    to {
-      background-position-x: -200%;
-    }
+  .header {
+    height: 96px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 
-  .align{
-    display: flex;
+  h2 {
+    height: 30px;
   }
 
-  .align-p{
-    margin-right: 10px;
-    margin-top: 0px;
-    flex: 1;
+  p {
+    height: 15px;
   }
+}
+
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+.align{
+  display: flex;
+}
+
+.align-p{
+  margin-right: 10px;
+  margin-top: 0px;
+  flex: 1;
+}
