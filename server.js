@@ -8,16 +8,18 @@ const { log } = require('console');
 const maxmind = require('maxmind');
 const session = require('express-session');
 const crypto = require('crypto');  // Node.js built-in module
+const jwt = require('jsonwebtoken');
+const { console } = require('inspector');
+
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 // const crypto = require('crypto'); // Make sure to import crypto
 
 
 const app = express();
-const PORT = 3001;
-const CryptoJS = require('crypto-js');
+const PORT = 3002;
 const encryptionKey = process.env.CRYPTOloc;
 const otps = {};
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const secretKey = process.env.CRYPTOJSP; //to be more encrypted
 const encrypTrip = process.env.CRYPTOloc;
 // Create a new pool instance with your PostgreSQL configuration
@@ -39,12 +41,7 @@ app.use(session({
     }
 }));
 
-// Function to decrypt the payload
-function decryptPayload(encryptedData) {
-    const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
-    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-    return decryptedData;
-}
+
 
 // Test the PostgreSQL connection
 pool.connect((err, client, release) => {
@@ -64,18 +61,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use(express.static('images'));
 
-
-app.get('/refresh', (req, res) => {
-    // You can generate the key here or fetch it securely from a database or environment variable
-    // You can make this dynamic or more secure
-         
-    res.json({ key: encryptionKey });
-});
-
-app.get('/trip',(req,res)=>{
-   
-    res.json({ key:encrypTrip });
-})
 
 
 
@@ -100,54 +85,16 @@ app.get('/visa', (req, res) => {
     res.sendFile(path.join(__dirname,'visa', 'visa.html'));
 });
 
-// const crypto = require('crypto'); // Make sure to import crypto
-// const axios = require('axios'); // Make sure axios is imported
 
 app.post('/openai', async (req, res) => {
-    const { prompt, iv } = req.body;
+    const encryptedPrompt = req.body.prompt;
 
-    console.log('Request received'); // Log when the request is received
-    console.log('Prompt (encrypted):', prompt);
-    console.log('IV (encrypted):', iv);
-
-    const secretKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.=1-043248029834279562945.,/skxcknlcwoehnafc'; 
-    
-    // Function to decrypt the encrypted prompt
-    function decryptPrompt(encryptedPrompt, iv, secretKey) {
-        console.log('Decrypting prompt...');
-        
-        const encryptedData = Buffer.from(encryptedPrompt, 'base64');
-        const ivBuffer = Buffer.from(iv, 'base64');
-        const keyBuffer = crypto.createHash('sha256').update(secretKey).digest();
-    
-        console.log('Key Buffer:', keyBuffer);
-        console.log('IV Buffer:', ivBuffer);
-    
-        // Separate the encrypted data and the authentication tag (last 16 bytes for AES-GCM)
-        const authTagLength = 16;
-        const authTag = encryptedData.slice(encryptedData.length - authTagLength); // Get the last 16 bytes as the auth tag
-        const ciphertext = encryptedData.slice(0, encryptedData.length - authTagLength); // Get the rest as ciphertext
-    
-        const decipher = crypto.createDecipheriv('aes-256-gcm', keyBuffer, ivBuffer);
-        decipher.setAuthTag(authTag); // Set the auth tag for AES-GCM mode
-    
-        let decrypted;
-        try {
-            decrypted = decipher.update(ciphertext, null, 'utf8');
-            decrypted += decipher.final('utf8');
-        } catch (error) {
-            console.error('Error during decryption:', error.message);
-            throw error;
-        }
-    
-        console.log('Decrypted Prompt:', decrypted);
-        return decrypted;
-    }
-
-    // Decrypt the prompt
+    debug('Request received:', encryptedPrompt);    
     let decryptedPrompt;
     try {
-        decryptedPrompt = decryptPrompt(prompt, iv, secretKey); // Use secretKey instead of secKey
+        decryptedPrompt = customDecrypt(encryptedPrompt);
+        console.log("Decrypted prompt:", decryptedPrompt);
+
     } catch (error) {
         console.error('Decryption failed:', error.message);
         return res.status(500).json({ error: 'Decryption failed.' });
@@ -190,21 +137,8 @@ app.post('/openai', async (req, res) => {
     }
 });
 
-
 app.post('/verify-otp', async (req, res) => {
     const { email, otp, password } = req.body;
-
-    // const secver = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';
-
-    // const emailDec = CryptoJS.AES.decrypt(email, secver);
-    // const decryptedEmail = JSON.parse(emailDec.toString(CryptoJS.enc.Utf8));
-
-    // const emailPass = CryptoJS.AES.decrypt(password, secver);
-    // const emailPassw = JSON.parse(emailPass.toString(CryptoJS.enc.Utf8));
-
-    // const decOtp = CryptoJS.AES.decrypt(otp, secver);
-    // const decOtpFin = JSON.parse(decOtp.toString(CryptoJS.enc.Utf8));
-
 
     try {
 
@@ -265,13 +199,14 @@ app.post('/register', (req, res) => {
         // Log transporter setup
         console.log('Setting up email transporter...');
         const transporter = nodemailer.createTransport({
-            service: 'smtp.outlook.com',//process.env.DUMMY_GEN, // Or your email service provider
+            host: "smtp.gmail.com",
             port: 587,
-         //   secure: true,
+            secure: false,
             auth: {
-                user: process.env.DUMMY_EMAIL, // Replace with your email
-                pass: process.env.DUMMY_PASSWORD, // Replace with your email password
+                user: process.env.DUMMY_EMAIL,
+                pass: process.env.DUMMY_PASSWORD,
             },
+            connectionTimeout: 10000, // 10 seconds
         });
 
         const mailOptions = {
@@ -307,37 +242,99 @@ app.post('/register', (req, res) => {
     }
 });
 
+
+// Route to handle form submission
+app.post('/send-email', async (req, res) => {
+    const { email, name, phone, query } = req.body;
+
+  
+
+    // Insert data into database
+    try {
+        const insertQuery = `
+            INSERT INTO inquiries (email, name, phone, query)
+            VALUES ($1, $2, $3, $4) RETURNING id
+        `;
+        const values = [email, name, phone, query];
+        const result = await pool.query(insertQuery, values);
+        const insertedId = result.rows[0].id;
+
+        console.log('Inserted inquiry ID:', insertedId);
+
+        // // Configure the email transporter
+        // const transporter = nodemailer.createTransport({
+        //     service: 'smtp.outlook.com',
+        //     port: 587,
+        //     auth: {
+        //         user: process.env.EMAIL_USER,
+        //         pass: process.env.EMAIL_PASS
+        //     }
+        // });
+
+        // const mailOptions = {
+        //     from: process.env.EMAIL_USER,
+        //     to: process.env.EMAIL_USER, // Send to yourself
+        //     subject: 'New Inquiry Received',
+        //     text: `You have received a new inquiry:\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nQuery: ${query}`
+        // };
+
+        // // Send email
+        // transporter.sendMail(mailOptions, (error, info) => {
+        //     if (error) {
+        //         console.error('Error sending email:', error.message);
+        //         return res.status(500).json({ message: 'Failed to send email', error });
+        //     }
+        //     console.log('Email sent successfully:', info.response);
+        //     res.status(200).json({ message: 'Email sent successfully' });
+        // });
+    } catch (error) {
+        console.error('Database or email error:', error);
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+});
+
+
+
+function customDecrypt(data) {
+    let shifted = '';
+    for (let i = 0; i < data.length; i++) {
+        shifted += String.fromCharCode(data.charCodeAt(i) - 5); // Shift characters back by 5
+    }
+    let decrypted = Buffer.from(shifted, 'base64').toString('utf-8'); // Base64 decoding
+    return decrypted;
+}
+
+function customDecryptPrompt(data) {
+    let unshifted = '';
+    // Shift characters back by 5
+    for (let i = 0; i < data.length; i++) {
+        unshifted += String.fromCharCode(data.charCodeAt(i) - 5);
+    }
+    // Base64 decode
+    let decrypted = atob(unshifted);
+    return decrypted;
+}
+
+
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-
-    // const secKey = 'fcvatgf76wyge8rwefhrgfveivsw8e97w@$?.woehnafc';
-    
-    // // Decrypt the email and password
-    // const decryptedEmailBytes = CryptoJS.AES.decrypt(email, secKey);
-    // const decryptedEmail = decryptedEmailBytes.toString(CryptoJS.enc.Utf8);
-
-    // const decryptedPasswordBytes = CryptoJS.AES.decrypt(password, secKey);
-    // const decryptedPassword = decryptedPasswordBytes.toString(CryptoJS.enc.Utf8);
-    
     
     try {
 
-        // const decryptedEmailBytes = CryptoJS.AES.decrypt(email, secKey);
-        // const decryptedEmail = decryptedEmailBytes.toString(CryptoJS.enc.Utf8);
-    
-        // const decryptedPasswordBytes = CryptoJS.AES.decrypt(password, secKey);
-        // const decryptedPassword = decryptedPasswordBytes.toString(CryptoJS.enc.Utf8);
+        const decryptedEmail = customDecrypt(email);
+        const decryptedPassword = customDecrypt(password);
+
         
         // Query the user by email from the database
-        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [decryptedEmail]);
 
         if (result.rows.length > 0) {
             const user = result.rows[0];
 
             // Compare the provided password with the password stored in the database (plain text)
-            if (password === user.password) {
+            if (decryptedPassword  === user.password) {
                 // Password matches
-                req.session.email = email; 
+                req.session.email = decryptedEmail; 
                 return res.status(200).json({ message: 'Login successful' });
             } else {
                 // Password does not match
@@ -363,7 +360,7 @@ app.post('/storeTripData', async (req, res) => {
     
 
     const query = `
-        INSERT INTO user_trip_details (email, currency, expense_cap, resident_var, duration, companion, accommodation, style, interest, transport,travelto)
+        INSERT INTO user_trip_details (email, currency, expense_cap, resident_var, duration, companion, accommodation, style, interest, transport,travel_to)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11)
         RETURNING id;
     `;
@@ -394,31 +391,35 @@ app.get('/getUserTripId', (req, res) => {
     if (req.session.userTripId) {
         res.status(200).json({ userTripId: req.session.userTripId });
     } 
-    // else {
-    //     res.status(404).json({ message: 'No userTripId found in session' });
-    // }
+  
 });
 
 app.post('/storeItineraryData', async (req, res) => {
-    const { userTripId, itineraryData,email } = req.body;  // Now expecting userTripId instead of email
+    const { itineraryData, email } = req.body;  // Now expecting userTripId instead of email
 
-    // if (!userTripId) {
-    //     return res.status(400).send({ message: 'userTripId is required to store itinerary data.' });
-    // }
+    // Logging the incoming request data
+    console.log("Request body:", req.body);
 
     const query = `
-        INSERT INTO trip_itinerary (user_trip_id, email,itinerary_data)
-        VALUES ($1, $2, $3)
+        INSERT INTO trip_itinerary (email, itinerary_data)
+        VALUES ($1, $2)
     `;
 
     try {
-        await pool.query(query, [userTripId, email,itineraryData]);
+        // Checking values before inserting
+        console.log("Email:", email);
+        console.log("Itinerary Data:", itineraryData);
+
+        await pool.query(query, [email, itineraryData]);
+
+        console.log("Data inserted successfully");
         res.status(200).send({ message: 'Itinerary data stored successfully!' });
     } catch (error) {
         console.error('Error storing itinerary data:', error);
         res.status(500).send({ message: 'Error storing itinerary data' });
     }
 });
+
 
 // Refactored checkItinerary route using async/await
 app.post('/checkItinerary', async (req, res) => {
@@ -525,7 +526,45 @@ app.post('/visaHelp', async (req,res)=>{
     }
 })
 
-// Start the server
+app.post('/auth-google', async (req, res) => {
+    const { email, name } = req.body;
+
+    try {
+        // Step 1: Query the user by email from the database
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+
+        if (result.rows.length > 0) {
+            // Step 2: If user is found, check if the provided name matches the password field
+            const user = result.rows[0];
+
+            if (name === user.password) {  // Name is being checked against the password field
+                // Name matches, login successful
+                req.session.email = email;  // Save email in session
+                return res.status(200).json({ message: 'Login successful' });
+            } else {
+                // Name does not match
+                return res.status(401).json({ message: 'Wrong email or password' });
+            }
+        } else {
+            // Step 3: If no user is found, create a new user
+            console.log('No user found. Registering new user.');
+
+            const insertQuery = 'INSERT INTO users (email, password) VALUES ($1, $2)';
+            await pool.query(insertQuery, [email, name]);  // Insert email and name (as password)
+
+            // After successful registration, log the user in
+            req.session.email = email;  // Save email in session
+            return res.status(201).json({ message: 'User registered and login successful' });
+        }
+    } catch (error) {
+        console.error('Error during authentication:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+//Start the server
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
