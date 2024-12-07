@@ -4,27 +4,21 @@ window.addEventListener('load', function() {
  
     const email = localStorage.getItem('emailLog') || null; // Null if not found
 
-    console.log(email);
-    
-    // Fetch the userTripId from the session
-    alert('chl');
-  
+      
     const userTripId = null;
-    fetch('/getUserTripId')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
+    // fetch('/getUserTripId')
+    //     .then(response => response.json())
+    //     .then(data => {
           
-            userTripId = data.userTripId;
+    //         userTripId = data.userTripId;
           
-            console.log('userTripId',userTripId);
-        })
-        .catch(error => {
-            console.error('Error fetching userTripId:', error);
-        });
+    //     })
+    //     .catch(error => {
+    //         console.error('Error fetching userTripId:', error);
+    //     });
 
-    // Poll for the itineraryResponse in localStorage
-    console.log('userTripId',userTripId);
+    // // Poll for the itineraryResponse in localStorage
+    // console.log('userTripId',userTripId);
     const itineraryCard = document.getElementById('itinerary-card');
     const itineraryTitle = document.getElementById('itinerary-title');
     const itineraryContent = document.getElementById('itinerary-content');
@@ -47,11 +41,8 @@ window.addEventListener('load', function() {
             clearInterval(checkForItinerary);
 
             // Send the itinerary data to the server if email and userTripId are available
-            console.log('oustide if email and userid', email, userTripId );
 
-            if (email ) {
-                console.log('under if email and userid', email, userTripId );
-                
+            if (email ) {                
                 const itineraryData = parsedResponse.data;
 
                 fetch('/storeItineraryData', {
@@ -59,14 +50,14 @@ window.addEventListener('load', function() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ userTripId,email, itineraryData }),
+                    body: JSON.stringify({ email, itineraryData }),
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.message) {
-                        console.log('Itinerary stored successfully:', data.message);
+                        console.log('Itinerary stored successfull');
                     } else {
-                        console.log('Error storing itinerary data');
+                        console.error('Error storing itinerary data');
                     }
                 })
                 .catch(error => {
