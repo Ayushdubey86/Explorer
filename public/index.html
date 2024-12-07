@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
     <title>Trip Planner</title>
 </head>
 <body>
- 
+    <div class="wrappere">
         <div class="container-fluid">
             <div class="row">
-                <h1 class="col-md-4 col-lg-4 offset-1 mt-3 explorer">TripPlanner</h1>
-                <p class="col-md-1 col-lg-1 mt-4 d-flex justify-content-center align-items-center"><a href="/visa" class="header-visa">Visa</a></p>
-                <p class="col-md-1 col-lg-1 mt-4 d-flex justify-content-center align-items-center"><a href="/about" class="header-about" target="_blank">About</a></p>
+                <h1 class="col-md-4 col-lg-4 offset-1 mt-3 explorer">Ferolug Travel</h1>
+                <p class="col-md-1 col-lg-1 mt-4 d-flex justify-content-center align-items-center offset-1"><a href="/about" class="header-about" target="_blank">About</a></p>
                 <p class="col-md-1 col-lg-1 mt-4 d-flex ms-2 justify-content-center align-items-center"><a href="/contact" class="header-contact"  target="_blank">Contact</a></p>
                 <button id="previousIti" class="col-md-2 col-lg-2 mt-4 mb-3 prev-iti d-none offset-1 ">Previous Itinerary</button>
                 <button class="col-md-1 col-lg-1 mt-4 mb-4 login-button offset-1 custom-btn" onclick="openLoginPopup()">Login</button>
@@ -28,9 +28,9 @@
             </div>
         </div>
 
-        <div class="container-fluid">
+        <div class="container-fluid belowcontainer">
             <div class="row">
-                <h1 class="mx-auto text-center p-2 mt-4 planYourTrip">Plan    Your   Trip</h1>
+                <h1 class="mx-auto text-center p-2 mt-4 planYourTrip">Plan Your Trip</h1>
             </div>
             <div class="row pb-3 ps-3 ms-5">
                 <div class="col-md-2 col-lg-2 offset-1   d-flex flex-column" id="">                
@@ -74,7 +74,7 @@
             </div>
         </div>
     
-        <div class="container-fluid">
+        <div class="container-fluid moreOptional>
             <div class="row">
                 <!-- Button to toggle the visibility of the dropdowns -->
                 <button class="col-lg-8 col-md-8 offset-2 more-btn" type="button" data-bs-toggle="collapse" data-bs-target="#optional-preferences" aria-expanded="false" aria-controls="optional-preferences">
@@ -156,7 +156,17 @@
 
             <input type="password" placeholder="Password" id="password" name="password" required>
 
-            <button type="submit" id="submit-login">Submit</button>
+           
+            <button type="submit" id="submit-login" class="mb-3 sub">Submit</button>
+                <!-- Add Google Sign-In Button -->
+                <div id="g_id_onload"
+                data-client_id="1035340690821-47cju7t3tnv5ebfmo5asl0qfqbqgqtpd.apps.googleusercontent.com"
+                data-context="signin"
+                data-callback="handleCredentialResponse"
+                data-auto_prompt="false">
+            </div>
+            <button class="mb-2" onclick="openRegisterPopup()">Register</button>
+            <div class="g_id_signin" data-type="standard"></div> 
         </div>
     </div>  
           
@@ -168,38 +178,174 @@
             <input type="text" placeholder="Email" id="emailReg" name="email" required>
             <input type="password" placeholder="Password" id="passwordReg" name="password" required>
            
-            </div> <button type="button" id="registerButton" >Register</button>
+            </div> <button type="button" id="registerButton" class="mb-2" >Register</button>
             <div id="otpForm">
             <input type="text" id="otp" placeholder="Enter OTP" required />
             <button type="button" id="verifyOtpButton">Verify OTP</button>
             </div>
+            <div id="g_id_onload"
+            data-client_id="1035340690821-47cju7t3tnv5ebfmo5asl0qfqbqgqtpd.apps.googleusercontent.com"
+            data-context="signup"
+            data-callback="handleCredentialResponse"
+            data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
             <div id="message" style="color: red;"></div>
         </div>
     </div> 
+</div>
 
+<div class="mobile chk" >
 
-    <!-- <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="card" style="width: 18rem; margin-right: 10px;">
-                <div class="card-body">
-                    <p class="card-text">Reach Out or Whatsapp us on +91 9326352966</p>
-                </div>
-            </div>
+    <video id="videoPlayer" autoplay muted playsinline class="bideo">
+        Your browser does not support the video tag.
+    </video>
     
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <p class="card-text">Email us on myTrip@gmail.com</p>
+    
+
+    <div class="container-fluid">
+
+        <div class="row align-items-center">
+            <!-- Header Section -->
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Sidebar Icon Button -->
+                <div>
+                    <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+                        <i class="bi bi-list fs-3 "></i> <!-- Sidebar icon -->
+                    </button>
+                </div>
+    
+                <!-- Ferolug Travel Header -->
+                <div>
+                    <h1 class="explorer m-0 fs-5 text-center">Ferolug Travel</h1>
+                </div>
+    
+                <!-- User Icon -->
+                <div>
+                    <i class="bi bi-person fs-3 loginIcon" onclick="openLoginPopup()"></i>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
-        <footer class="footer bg-dark text-white text-center py-3">
+    <div class="container-fluid d-flex align-items-center justify-content-center mt-1">
+        <h1 class="tagline w-100">Your Perfect Itinerary—Ready in Moments, So You Can Focus on the Journey!</h1>
+    </div>    
+    <div class="container mt-1">
+
+       
+
+        <div class="input-group mb-1">
+            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+            <input type="text" class="form-control" placeholder="Destination">
+        </div>
+    
+        <div class="mb-1">
+            <input type="text" id="resident" placeholder="Current Resident" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        </div>
+    
+        <div class="mb-1">
+            <div class="input-group">
+                <input type="text" class="form-control" id="expense-cap" placeholder="Enter budget" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                <select class="form-select" id="currency" name="companion" aria-label="Select currency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="INR">INR</option>
+                    <option value="JPY">JPY</option>
+                </select>
+            </div>
+        </div>
+    
+        <!-- Duration Input -->
+        <div class="mb-1">
+            <input type="number" id="duration" placeholder="Days Expected" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" />
+        </div>
+
+        <div class="mb-3 offset-6 mt-3">
+            <button id="submit-button-mobile" class="btn btn-primary"> Plan My Trip</button>
+        </div>
+     
+    </div>
+   
+    
+    <button class="more-btn btn btn-primary w-100" type="button"  data-bs-toggle="collapse" data-bs-target="#optional-preferences" 
+        aria-expanded="false" aria-controls="optional-preferences">
+        More Optional Preferences - Better Outcome
+    </button>
+
+        <!-- Collapsible Section -->
+        <div class="collapse mt-3" id="optional-preferences">
+            <div class="card card-body">
+                <!-- Select Options -->
+                <select class="form-select mb-3" id="companion" name="companion">
+                    <option value="" disabled selected>Companion</option>
+                    <option value="Solo">Solo</option>
+                    <option value="Couple">Couple</option>
+                    <option value="Family">Family</option>
+                    <option value="Group">Group</option>
+                </select>
+    
+                <select class="form-select mb-3" id="accommodation" name="accommodation">
+                    <option value="" disabled selected>Accommodation</option>
+                    <option value="Hostel">Hostel</option>
+                    <option value="Hotel">Hotel</option>
+                    <option value="Camping">Camping</option>
+                    <option value="Vacation Rental">Vacation Rental</option>
+                </select>
+    
+                <select class="form-select mb-3" id="style" name="style">
+                    <option value="" disabled selected>Travel Style</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Relaxation">Relaxation</option>
+                    <option value="Cultural">Cultural</option>
+                </select>
+    
+                <select class="form-select mb-3" id="interest" name="interest">
+                    <option value="" disabled selected>Interest</option>
+                    <option value="Historical Sites">Historical Sites</option>
+                    <option value="Nature and Hiking">Nature and Hiking</option>
+                    <option value="Food and Wine">Food and Wine</option>
+                    <option value="Art and Culture">Art and Culture</option>
+                    <option value="Shopping">Shopping</option>
+                </select>
+    
+                <select class="form-select mb-3" id="transport" name="transport">
+                    <option value="" disabled selected>Transport</option>
+                    <option value="Car Rental">Car Rental</option>
+                    <option value="Public Transport">Public Transport</option>
+                    <option value="Walking/Biking">Walking/Biking</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+<div class="offcanvas offcanvas-start custom-offcanvas" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel" style="max-width: 77%;">
+    <div class="offcanvas-header">
+        <h5 id="sidebarLabel">Ferolug Travel</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <!-- Sidebar content -->
+        <ul class="list-unstyled">
+            <li><a href="/" class="text-decoration-none">Home</a></li>
+            <li><a href="/about" class="text-decoration-none">About</a></li>
+            <li><a href="/contact" class="text-decoration-none">Contact</a></li>
+            <li><a class="text-decoration-none previti d-none'">Previous Itinerary</a></li>
+        </ul>
+    </div>
+</div>
+
+
+        <footer class="footer bg-dark text-white text-center py-3 d-none d-sm-block"">
             <p>&copy; 2024 MyTrip - Phone: +91 93263 52966</p>
         </footer>
    
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script  src="script.js"></script>
