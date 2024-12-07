@@ -114,7 +114,7 @@
 }
 
 .more-dropdown:hover {
-  background-color: black;
+  background-color: grey;
   color: azure;
 }
 
@@ -122,19 +122,6 @@
   background-color: azure;
   border-radius: 10px;
 }
-
-/* .planBtn{
-  border-radius: 23px;
-  background-color: white;
-  padding: 10px;
-}
-
-.planBtn:hover{
-  background-color: black;
-  color: white;
-} */
-
-
 
 #background-video-container {
   position: relative;
@@ -426,3 +413,65 @@ text-align: 'center';
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4); /* Deeper shadow on hover */
   transform: translateY(-3px);
 }
+
+.g_id_signin{
+  max-width: 94%;
+}
+
+@media (max-width: 576px) {
+  /* .planYourTrip,
+  .belowcontainer,
+  .moreOptional, */
+  .wrappere ,
+  .planBtn{
+      display: none;
+  }
+}
+
+@media (min-width: 576px){
+  .mobile{
+    display: none;
+  }
+}
+
+.offcanvas {
+  width: 250px; 
+}
+
+.chk{
+  margin-top: -25px;
+  z-index: 1;
+}
+
+.header-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.overtest {
+  font-size: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  animation: fadeInOut 10s infinite;
+}
+
+.bideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; /* Push video behind content */
+}
+
+ .tagline {
+    font-size: 1.3rem;
+    text-align: center;
+    font-weight: bold;
+    padding: 9px;
+    color: #fff;
+    background: linear-gradient(135deg, #00bcd4, #8e44ad);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: glow 2s infinite alternate;
+  }
