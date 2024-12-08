@@ -262,7 +262,7 @@ document.getElementById('submit-button').addEventListener('click', async functio
 
         // const encryptedPrompt = CryptoJS.AES.encrypt(JSON.stringify(prompt), secretKey).toString();
     
-        const { encryptedPrompt, iv } = await encryptPrompt(prompt, secretKey);
+        //const { encryptedPrompt} = await simpleEncrypt(prompt);
 
         // Fetch itinerary without storing data if user is not logged in
         const response = await fetch('/openai', {
@@ -270,7 +270,7 @@ document.getElementById('submit-button').addEventListener('click', async functio
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ prompt: encryptedPrompt, iv: iv }) // Use the prompt generated from createBasePrompt
+            body: JSON.stringify({ encryptedPrompt: prompt }) // Use the prompt generated from createBasePrompt
         });
 
         const data = await response.json();
@@ -448,7 +448,7 @@ document.getElementById('submit-button-mobile').addEventListener('click', async 
 
         // const encryptedPrompt = CryptoJS.AES.encrypt(JSON.stringify(prompt), secretKey).toString();
     
-        const { encryptedPrompt, iv } = await encryptPrompt(prompt, secretKey);
+        //const { encryptedPrompt} = await simpleEncrypt(prompt);
 
         // Fetch itinerary without storing data if user is not logged in
         const response = await fetch('/openai', {
@@ -456,7 +456,7 @@ document.getElementById('submit-button-mobile').addEventListener('click', async 
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ prompt: encryptedPrompt, iv: iv }) // Use the prompt generated from createBasePrompt
+            body: JSON.stringify({ encryptedPrompt: prompt}) // Use the prompt generated from createBasePrompt
         });
 
         const data = await response.json();
@@ -886,8 +886,6 @@ function showModal() {
     document.body.appendChild(modalOverlay);
 }
 
-
-
 function stringToArrayBuffer(str) {
     return new TextEncoder().encode(str);
 }
@@ -962,7 +960,15 @@ function parseJwt(token) {
 }
 
 
-async function encryptPrompt(prompt, secretKey) {
+function simpleEncrypt(data) {
+    let shifted = '';
+    for (let i = 0; i < data.length; i++) {
+        shifted += String.fromCharCode(data.charCodeAt(i) + 5); // Shift characters forward by 5
+    }
+    return btoa(shifted); // Base64 encode the shifted string
+}
+
+async function simpleEncrypt(prompt, secretKey) {
     const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Generate random 12-byte IV (Initialization Vector)
     const key = await generateKeyFromSecret(secretKey); // Generate AES-GCM key
 
