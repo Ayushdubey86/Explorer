@@ -87,29 +87,29 @@ app.get('/visa', (req, res) => {
 
 
 app.post('/openai', async (req, res) => {
-    const encryptedPrompt = req.body.prompt;
-    let decryptedPrompt;
-    try {
-        decryptedPrompt = customDecrypt(encryptedPrompt);
-        console.log("Decrypted prompt:", decryptedPrompt);
+    const {encryptedPrompt} = req.body;
+    // let decryptedPrompt;
+    // try {
+    //     decryptedPrompt = customDecrypt(encryptedPrompt);
+    //     console.log("Decrypted prompt:", decryptedPrompt);
 
-    } catch (error) {
-        console.error('Decryption failed:', error.message);
-        return res.status(500).json({ error: 'Decryption failed.' });
-    }
+    // } catch (error) {
+    //     console.error('Decryption failed:', error.message);
+    //     return res.status(500).json({ error: 'Decryption failed.' });
+    // }
 
     if (!process.env.OPENAI_API_KEY) {
         console.error('OpenAI API key is missing.'); // Log if API key is missing
         return res.status(500).json({ error: 'OpenAI API key is missing.' });
     }
 
-    console.log('Received prompt after decryption:', decryptedPrompt); // Log the decrypted prompt after decryption
+    //console.log('Received prompt after decryption:', decryptedPrompt); // Log the decrypted prompt after decryption
 
     try {
         console.log('Sending request to OpenAI API...'); // Log when making the API request
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: decryptedPrompt }],
+            messages: [{ role: "user", content: encryptedPrompt }],
             temperature: 0.6,
             max_tokens: 3001,
             top_p: 0.9,
@@ -133,6 +133,9 @@ app.post('/openai', async (req, res) => {
         console.error('Error communicating with OpenAI API:', error.message); // Log any errors during the API call
         res.status(500).json({ error: 'An error occurred while processing your request.' });
     }
+
+    // res.json({ response: encryptedPrompt });
+
 });
 
 app.post('/verify-otp', async (req, res) => {
@@ -291,8 +294,6 @@ app.post('/send-email', async (req, res) => {
     }
 });
 
-
-
 function customDecrypt(data) {
     let shifted = '';
     for (let i = 0; i < data.length; i++) {
@@ -301,18 +302,6 @@ function customDecrypt(data) {
     let decrypted = Buffer.from(shifted, 'base64').toString('utf-8'); // Base64 decoding
     return decrypted;
 }
-
-function customDecryptPrompt(data) {
-    let unshifted = '';
-    // Shift characters back by 5
-    for (let i = 0; i < data.length; i++) {
-        unshifted += String.fromCharCode(data.charCodeAt(i) - 5);
-    }
-    // Base64 decode
-    let decrypted = atob(unshifted);
-    return decrypted;
-}
-
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -559,7 +548,6 @@ app.post('/auth-google', async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
-
 
 //Start the server
 
