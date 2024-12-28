@@ -623,9 +623,7 @@ document.getElementById('verifyOtpButton').addEventListener('click', () => {
     const email = document.getElementById('emailReg').value;
     const otp = document.getElementById('otp').value;
     const password = document.getElementById('passwordReg').value;
-    
-
- 
+    document.getElementById('registerButton').remove();
     
     // Send encrypted data to server
     fetch('/verify-otp', {
