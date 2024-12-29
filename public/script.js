@@ -129,9 +129,9 @@ function checkSearchLimit() {
 
 
 document.getElementById('submit-button').addEventListener('click', async function () {
-    if (!checkSearchLimit()) {
-        return; // Prevent further searches without login/registration
-    }
+    // if (!checkSearchLimit()) {
+    //     return; // Prevent further searches without login/registration
+    // }
 
     const newWindow = window.open('/itinerary', '_blank'); 
 
@@ -280,32 +280,32 @@ document.getElementById('submit-button').addEventListener('click', async functio
         // Store the response in localStorage
         localStorage.setItem('itineraryResponse', JSON.stringify({ status: 'success', data: itineraryResponse }));
 
-        // If user is logged in, store their search data
-        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-        const email = localStorage.getItem('emailLog');
+        // // If user is logged in, store their search data
+        // const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        // const email = localStorage.getItem('emailLog');
 
-        if (email) {
-            await fetch('/storeTripData', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    travelto,
-                    email,
-                    currency,
-                    expenseCap,
-                    residentvar,
-                    duration,
-                    companion,
-                    accommodation,
-                    style,
-                    interest,
-                    transport
-                })
-            });
+        // if (email) {
+        //     await fetch('/storeTripData', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify({
+        //             travelto,
+        //             email,
+        //             currency,
+        //             expenseCap,
+        //             residentvar,
+        //             duration,
+        //             companion,
+        //             accommodation,
+        //             style,
+        //             interest,
+        //             transport
+        //         })
+        //     });
 
-        }
+        // }
 
         // Handle itinerary display logic here
 
@@ -315,9 +315,9 @@ document.getElementById('submit-button').addEventListener('click', async functio
 });
 
 document.getElementById('submit-button-mobile').addEventListener('click', async function () {
-    if (!checkSearchLimit()) {
-        return; // Prevent further searches without login/registration
-    }
+    // if (!checkSearchLimit()) {
+    //     return; // Prevent further searches without login/registration
+    // }
 
     const newWindow = window.open('/itinerary', '_blank'); 
 
@@ -467,31 +467,31 @@ document.getElementById('submit-button-mobile').addEventListener('click', async 
         localStorage.setItem('itineraryResponse', JSON.stringify({ status: 'success', data: itineraryResponse }));
 
         // If user is logged in, store their search data
-        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-        const email = localStorage.getItem('emailLog');
+        // const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        // const email = localStorage.getItem('emailLog');
 
-        if (email) {
-            await fetch('/storeTripData', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    travelto,
-                    email,
-                    currency,
-                    expenseCap,
-                    residentvar,
-                    duration,
-                    companion,
-                    accommodation,
-                    style,
-                    interest,
-                    transport
-                })
-            });
+        // if (email) {
+        //     await fetch('/storeTripData', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify({
+        //             travelto,
+        //             email,
+        //             currency,
+        //             expenseCap,
+        //             residentvar,
+        //             duration,
+        //             companion,
+        //             accommodation,
+        //             style,
+        //             interest,
+        //             transport
+        //         })
+        //     });
 
-        }
+        // }
 
         // Handle itinerary display logic here
 
@@ -623,7 +623,9 @@ document.getElementById('verifyOtpButton').addEventListener('click', () => {
     const email = document.getElementById('emailReg').value;
     const otp = document.getElementById('otp').value;
     const password = document.getElementById('passwordReg').value;
-    document.getElementById('registerButton').remove();
+    
+
+ 
     
     // Send encrypted data to server
     fetch('/verify-otp', {
